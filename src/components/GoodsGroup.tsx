@@ -22,7 +22,13 @@ const GoodsGroup = () => {
   };
 
   return (
-    <HStack gap={4} padding={4} display={{ base: "none", md: "flex" }}>
+    <HStack
+      gap={4}
+      padding={4}
+      paddingTop={0}
+      display={{ base: "none", md: "flex" }}
+      backgroundColor="#1A202C"
+    >
       <Flex
         align="center"
         gap={1}
@@ -34,88 +40,97 @@ const GoodsGroup = () => {
       >
         <BsList className="text-2xl" />
         <span>دسته بندی کالاها</span>
-        {showChild && <Box className="fade absolute top-8 h-[430px] w-[1374px] bg-[#1E293B] text-white rounded-br rounded-bl" onMouseOver={toggleChild} onMouseLeave={toggleChild}>
+        {showChild && (
+          <Box
+            className="fade absolute top-8 h-[430px] w-[1374px] rounded-bl rounded-br bg-[#1E293B] text-white"
+            onMouseOver={toggleChild}
+            onMouseLeave={toggleChild}
+          >
             <Flex justify={"space-between"}>
               <ul className="flex flex-col justify-between gap-y-6 border-l-2 border-l-white p-4">
                 <li className="goodsList">
-                  <Flex align={"center"} gap={2}>
-                    <BsLaptop />
+                  <Flex align={"center"} gap={4}>
+                    <BsLaptop className="text-2xl" />
                     <span>کالای دیجیتال</span>
                   </Flex>
                   <BiChevronLeft />
                 </li>
                 <li className="goodsList">
-                  <Flex align={"center"} gap={2}>
-                    <IoShirtOutline />
+                  <Flex align={"center"} gap={4}>
+                    <IoShirtOutline className="text-2xl" />
                     <span>پوشاک</span>
                   </Flex>
                 </li>
                 <li className="goodsList">
-                  <Flex align={"center"} gap={2}>
-                    <MdOutlineToys />
+                  <Flex align={"center"} gap={4}>
+                    <MdOutlineToys className="text-2xl" />
                     <span>اسباب بازی، کودک و نوزاد</span>
                   </Flex>
                 </li>
                 <li className="goodsList">
-                  <Flex align={"center"} gap={2}>
-                    <BsHeartPulse />
+                  <Flex align={"center"} gap={4}>
+                    <BsHeartPulse className="text-2xl" />
                     <span>آرایشی و بهداشتی</span>
                   </Flex>
                 </li>
                 <li className="goodsList">
-                  <Flex align={"center"} gap={2}>
-                    <BiHome />
+                  <Flex align={"center"} gap={4}>
+                    <BiHome className="text-2xl" />
                     <span>لوازم خانه و آشپزخانه</span>
                   </Flex>
                 </li>
                 <li className="goodsList">
-                  <Flex align={"center"} gap={2}>
-                    <CgGym />
+                  <Flex align={"center"} gap={4}>
+                    <CgGym className="text-2xl" />
                     <span>ورزش و سفر</span>
                   </Flex>
                 </li>
                 <li className="goodsList">
-                  <Flex align={"center"} gap={2}>
-                    <BsBook />
+                  <Flex align={"center"} gap={4}>
+                    <BsBook className="text-2xl" />
                     <span>کتاب، لوازم‌التحریر و هنر</span>
                   </Flex>
                 </li>
               </ul>
-              <div className="w-full py-4 px-8">
-                <div className="flex items-center gap-x-4 mb-8 hoverTextColor">
+              <div className="w-full px-8 py-4">
+                <div className="hoverTextColor mb-8 flex items-center gap-x-4">
                   <span>دیدن تمامی محصولات این دسته</span>
                   <BiChevronLeft />
                 </div>
                 <Flex gap="12rem">
-                    <Flex direction="column" gap="12px">
-                      <span className="goodsSpan hoverTextColor">لپتاپ و لوازم جانبی</span>
-                      <ul className="flex flex-col gap-y-4 laptopList">
-                        <li>اپل</li>
-                        <li>ایسوس</li>
-                        <li>لنوو</li>
-                        <li>دل</li>
-                        <li>ام اس آی</li>
-                        <li>ایسر</li>
-                        <li>اچ پی</li>
-                        <li>سونی</li>
-                      </ul>
-                    </Flex>
-                    <Flex direction="column" gap="12px">
-                      <span className="goodsSpan hoverTextColor">موبایل و لوازم جانبی</span>
-                      <ul className="flex flex-col gap-y-4 mobileList">
-                        <li>اپل</li>
-                        <li>سامسونگ</li>
-                        <li>شیائومی</li>
-                        <li>نوکیا</li>
-                        <li>سونی</li>
-                        <li>بلک بری</li>
-                      </ul>
-                    </Flex>
+                  <Flex direction="column" gap="12px">
+                    <span className="goodsSpan hoverTextColor">
+                      لپتاپ و لوازم جانبی
+                    </span>
+                    <ul className="laptopList flex flex-col gap-y-4">
+                      <li>اپل</li>
+                      <li>ایسوس</li>
+                      <li>لنوو</li>
+                      <li>دل</li>
+                      <li>ام اس آی</li>
+                      <li>ایسر</li>
+                      <li>اچ پی</li>
+                      <li>سونی</li>
+                    </ul>
+                  </Flex>
+                  <Flex direction="column" gap="12px">
+                    <span className="goodsSpan hoverTextColor">
+                      موبایل و لوازم جانبی
+                    </span>
+                    <ul className="mobileList flex flex-col gap-y-4">
+                      <li>اپل</li>
+                      <li>سامسونگ</li>
+                      <li>شیائومی</li>
+                      <li>نوکیا</li>
+                      <li>سونی</li>
+                      <li>بلک بری</li>
+                    </ul>
+                  </Flex>
                 </Flex>
               </div>
             </Flex>
           </Box>
-        }
+        )}
       </Flex>
       <Link to="/discounts">
         <Flex

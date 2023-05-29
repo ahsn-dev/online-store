@@ -1,10 +1,5 @@
 import { create } from "zustand";
 
-
-
-
-const useOnlineStore = create((set) => ({
-
-}));
+const useOnlineStore = create((set) => ({}));
 
 export default useOnlineStore;
