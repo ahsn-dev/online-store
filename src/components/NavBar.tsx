@@ -6,7 +6,7 @@ import logo from "../assets/logo.png";
 import { AiOutlineShoppingCart } from 'react-icons/ai';
 import { IoMdArrowForward } from 'react-icons/io';
 import GoodsGroup from './GoodsGroup';
-
+import Slider from './Slider';
 
 
 
@@ -34,6 +34,7 @@ const NavBar = () => {
             </Flex>
           </HStack>
           <GoodsGroup />
+          <Slider />
       </>
     
   )

@@ -30,10 +30,11 @@ const GoodsGroup = () => {
         cursor="pointer"
         position="relative"
         onMouseOver={toggleChild}
+        className="z-50"
       >
         <BsList className="text-2xl" />
         <span>دسته بندی کالاها</span>
-        {showChild && <Box className="fade absolute top-8 h-[430px] w-[1324px] bg-[#1E293B] text-white" onMouseOver={toggleChild} onMouseLeave={toggleChild}>
+        {showChild && <Box className="fade absolute top-8 h-[430px] w-[1374px] bg-[#1E293B] text-white rounded-br rounded-bl" onMouseOver={toggleChild} onMouseLeave={toggleChild}>
             <Flex justify={"space-between"}>
               <ul className="flex flex-col justify-between gap-y-6 border-l-2 border-l-white p-4">
                 <li className="goodsList">
