@@ -5,6 +5,7 @@ import ColorModeSwitch from './ColorModeSwitch'
 import logo from "../assets/logo.png";
 import { AiOutlineShoppingCart } from 'react-icons/ai';
 import { IoMdArrowForward } from 'react-icons/io';
+import GoodsGroup from './GoodsGroup';
 
 
 
@@ -32,6 +33,7 @@ const NavBar = () => {
                 </Link>
             </Flex>
           </HStack>
+          <GoodsGroup />
       </>
     
   )

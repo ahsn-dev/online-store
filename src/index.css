@@ -6,3 +6,38 @@
     font-family: "vazir";
     src: url(/public/fonts/Vazir-Regular-FD.woff);
 }
+
+.fade {
+    animation: fadein .4s;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.goodsList {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.goodsList:hover {
+    color: #B4184F
+}
+
+.goodsSpan {
+    border-right-width: 4px;
+    border-radius: 4px;
+    padding-right: 8px;
+    border-color: #B4184F;
+}
+
+.hoverTextColor:hover {
+    color: #B4184F;
+}
+
+.laptopList > li:hover,
+.mobileList > li:hover {
+    color: #B4184F;
+}
