@@ -1,4 +1,4 @@
-import { Button, Image } from "@chakra-ui/react";
+import { Button, Image, useColorMode } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import digitalCategory from "../assets/categoriesImages/digitalCategory.png";
 import fashionCategory from "../assets/categoriesImages/fashionCategory.png";
@@ -8,12 +8,18 @@ import houseCategory from "../assets/categoriesImages/houseCategory.png";
 import toyCategory from "../assets/categoriesImages/toyCategory.png";
 import stationeryCategory from "../assets/categoriesImages/stationeryCategory.png";
 
-const GoodsCategory = () => {
+const ProductsCategory = () => {
+  const { colorMode } = useColorMode();
+
   return (
     <div className="mt-16 p-16">
       <h2 className="mb-8 text-center text-3xl font-bold">دسته‌بندی کالاها</h2>
       <div className="grid-rows-9 mx-auto hidden w-full grid-cols-2 gap-4 md:grid-cols-9 lg:grid xl:max-w-[2100px]">
-        <div className="col-span-3 row-span-6 flex items-center justify-around overflow-hidden rounded-md bg-[#0C4C76] px-4 py-10 shadow-lg">
+        <div
+          className={`col-span-3 row-span-6 flex items-center justify-around overflow-hidden rounded-md ${
+            colorMode === "dark" ? "bg-[#0C4C76]" : "bg-[#ade8f4]"
+          }  px-4 py-10 shadow-lg`}
+        >
           <div className="mx-2">
             <h3 className="text-xl font-bold 2xl:text-2xl">محصولات دیجیتال</h3>
             <p className="mt-2 text-sm font-bold">
@@ -22,7 +28,7 @@ const GoodsCategory = () => {
             <Link to="/">
               <Button
                 fontSize={13}
-                className="mt-4 inline-block rounded-lg bg-[#A61B4A] px-2 py-3 text-sm shadow-xl transition-transform duration-300 hover:scale-105"
+                className="mt-4 inline-block rounded-lg px-2 py-3 text-sm shadow-xl transition-transform duration-300 hover:scale-105"
               >
                 دیدن همه محصولات
               </Button>
@@ -37,7 +43,11 @@ const GoodsCategory = () => {
             />
           </div>
         </div>
-        <div className="col-span-3 row-span-6 flex items-center justify-around overflow-hidden rounded-md bg-[#882A18] px-4 py-10 shadow-lg">
+        <div
+          className={`col-span-3 row-span-6 flex items-center justify-around overflow-hidden rounded-md ${
+            colorMode === "dark" ? "bg-[#882A18]" : "bg-[#ffddd2]"
+          }  px-4 py-10 shadow-lg`}
+        >
           <div className="mx-2">
             <h3 className="text-xl font-bold 2xl:text-2xl">مد و پوشاک</h3>
             <p className="mt-2 text-sm font-bold">
@@ -46,7 +56,7 @@ const GoodsCategory = () => {
             <Link to="/">
               <Button
                 fontSize={13}
-                className="mt-4 inline-block rounded-lg bg-[#A61B4A] px-2 py-3 text-sm shadow-xl transition-transform duration-300 hover:scale-105"
+                className="mt-4 inline-block rounded-lg px-2 py-3 text-sm shadow-xl transition-transform duration-300 hover:scale-105"
               >
                 دیدن همه محصولات
               </Button>
@@ -61,7 +71,11 @@ const GoodsCategory = () => {
             />
           </div>
         </div>
-        <div className="col-span-3 row-span-3 flex items-center justify-around overflow-hidden rounded-md bg-[#6C2F5F] px-4 py-2 shadow-lg">
+        <div
+          className={`col-span-3 row-span-3 flex items-center justify-around overflow-hidden rounded-md ${
+            colorMode === "dark" ? "bg-[#6C2F5F]" : "bg-[#ddd92a]"
+          }  px-4 py-2 shadow-lg`}
+        >
           <div className="mx-2">
             <h3 className="text-xl font-bold 2xl:text-2xl">آرایشی و بهداشتی</h3>
             <p className="mt-2 text-sm font-bold">
@@ -86,7 +100,11 @@ const GoodsCategory = () => {
             />
           </div>
         </div>
-        <div className="col-span-3 row-span-3 flex items-center justify-around overflow-hidden rounded-md bg-[#650607] px-4 py-2 shadow-lg">
+        <div
+          className={`col-span-3 row-span-3 flex items-center justify-around overflow-hidden rounded-md ${
+            colorMode === "dark" ? "bg-[#650607]" : "bg-[#ffd60a]"
+          }  px-4 py-2 shadow-lg`}
+        >
           <div>
             <Image
               src={sportCategory}
@@ -109,7 +127,11 @@ const GoodsCategory = () => {
             </Link>
           </div>
         </div>
-        <div className="col-span-5 row-span-2 flex items-center justify-around overflow-hidden rounded-md bg-[#164C4B] px-4 shadow-lg">
+        <div
+          className={`col-span-5 row-span-2 flex items-center justify-around overflow-hidden rounded-md ${
+            colorMode === "dark" ? "bg-[#164C4B]" : "bg-[#ccd5ae]"
+          }  px-4 shadow-lg`}
+        >
           <div className="mx-2">
             <h3 className="text-xl font-bold 2xl:text-2xl">خانه و آشپزخانه</h3>
             <p className="mt-2 text-sm font-bold">
@@ -134,7 +156,11 @@ const GoodsCategory = () => {
             />
           </div>
         </div>
-        <div className="col-span-2 row-span-2 flex flex-col items-center justify-around overflow-hidden rounded-md bg-[#6C3D4B] px-4 py-2 shadow-lg">
+        <div
+          className={`col-span-2 row-span-2 flex flex-col items-center justify-around overflow-hidden rounded-md ${
+            colorMode === "dark" ? "bg-[#6C3D4B]" : "bg-[#cce3de]"
+          } px-4 py-2 shadow-lg`}
+        >
           <div className="mx-2 flex flex-col items-center">
             <h3 className="text-xl font-bold 2xl:text-2xl">
               اسباب‌بازی، کودک و نوزاد
@@ -161,7 +187,11 @@ const GoodsCategory = () => {
             />
           </div>
         </div>
-        <div className="col-span-2 row-span-2 flex items-center justify-around overflow-hidden rounded-md bg-[#694203] px-4 py-2 shadow-lg">
+        <div
+          className={`col-span-2 row-span-2 flex items-center justify-around overflow-hidden rounded-md ${
+            colorMode === "dark" ? "bg-[#694203]" : "bg-[#fbb13c]"
+          }  px-4 py-2 shadow-lg`}
+        >
           <div className="mx-2">
             <h3 className="text-xl font-bold 2xl:text-2xl">
               کتاب، لوازم تحریر و هنر
@@ -191,4 +221,4 @@ const GoodsCategory = () => {
   );
 };
 
-export default GoodsCategory;
+export default ProductsCategory;

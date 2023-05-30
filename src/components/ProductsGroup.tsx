@@ -1,4 +1,4 @@
-import { Box, Flex, HStack } from "@chakra-ui/react";
+import { Box, Flex, HStack, useColorMode } from "@chakra-ui/react";
 import { useState } from "react";
 import {
   BsBook,
@@ -14,7 +14,8 @@ import { Link } from "react-router-dom";
 import { MdOutlineToys } from "react-icons/md";
 import { CgGym } from "react-icons/cg";
 
-const GoodsGroup = () => {
+const ProductsGroup = () => {
+  const { colorMode } = useColorMode();
   const [showChild, setShowChild] = useState(false);
 
   const toggleChild = () => {
@@ -27,7 +28,7 @@ const GoodsGroup = () => {
       padding={4}
       paddingTop={0}
       display={{ base: "none", md: "flex" }}
-      backgroundColor="#1A202C"
+      backgroundColor={colorMode === "dark" ? "#1A202C" : "#f3f4f5"}
     >
       <Flex
         align="center"
@@ -42,12 +43,20 @@ const GoodsGroup = () => {
         <span>دسته بندی کالاها</span>
         {showChild && (
           <Box
-            className="fade absolute top-8 h-[430px] w-[1374px] rounded-bl rounded-br bg-[#1E293B] text-white"
+            className={`fade absolute top-8 h-[430px] w-[1374px] rounded-bl rounded-br ${
+              colorMode === "dark"
+                ? "bg-[#1E293B] text-white"
+                : "bg-[white] text-slate-700"
+            }`}
             onMouseOver={toggleChild}
             onMouseLeave={toggleChild}
           >
             <Flex justify={"space-between"}>
-              <ul className="flex flex-col justify-between gap-y-6 border-l-2 border-l-white p-4">
+              <ul
+                className={`flex flex-col justify-between gap-y-6 border-l-2 ${
+                  colorMode === "dark" ? "border-l-white" : "border-l-gray-400"
+                } p-4`}
+              >
                 <li className="goodsList">
                   <Flex align={"center"} gap={4}>
                     <BsLaptop className="text-2xl" />
@@ -138,7 +147,7 @@ const GoodsGroup = () => {
           gap={1}
           fontWeight={"bold"}
           borderRightWidth={2}
-          borderRightColor={"white"}
+          borderRightColor={colorMode === "dark" ? "white" : "gray.400"}
         >
           <BsPercent className="mr-4 text-xl" />
           <span>پیشنهادات و تخفیف‌های ویژه</span>
@@ -154,4 +163,4 @@ const GoodsGroup = () => {
   );
 };
 
-export default GoodsGroup;
+export default ProductsGroup;

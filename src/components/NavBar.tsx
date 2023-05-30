@@ -1,16 +1,29 @@
-import { Box, Button, Flex, HStack, Image } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Image,
+  useColorMode,
+} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import SearchInput from "./SearchInput";
 import ColorModeSwitch from "./ColorModeSwitch";
 import logo from "../assets/logo.png";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { IoMdArrowForward } from "react-icons/io";
-import GoodsGroup from "./GoodsGroup";
+import ProductsGroup from "./ProductsGroup";
 
 const NavBar = () => {
+  const { colorMode } = useColorMode();
+
   return (
     <Box position="sticky" top={0} zIndex={100}>
-      <HStack padding="10px" gap={8} backgroundColor="#1A202C">
+      <HStack
+        padding="10px"
+        gap={8}
+        backgroundColor={colorMode === "dark" ? "#1A202C" : "#f3f4f5"}
+      >
         <Link to="/">
           <Image src={logo} boxSize="80px" objectFit="cover" borderRadius={4} />
         </Link>
@@ -41,7 +54,7 @@ const NavBar = () => {
           </Link>
         </Flex>
       </HStack>
-      <GoodsGroup />
+      <ProductsGroup />
     </Box>
   );
 };
