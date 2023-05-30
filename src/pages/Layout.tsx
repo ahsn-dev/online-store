@@ -5,6 +5,7 @@ import Slider from "../components/Slider";
 import Info from "../components/Info";
 import ProductsCategory from "../components/ProductsCategory";
 import LatestProducts from "../components/LatestProducts";
+import Footer from "../components/Footer";
 
 const Layout = () => {
   return (
@@ -17,6 +18,7 @@ const Layout = () => {
       <Box padding={5}>
         <Outlet />
       </Box>
+      <Footer />
     </>
   );
 };
