@@ -26,10 +26,10 @@ const ProductCard = ({ image, name, price }: Props) => {
     <div
       className={`relative col-span-6 my-1 flex rounded-xl ${
         colorMode === "dark" ? "bg-[#414E60]" : "bg-[#DDE0EA]"
-      }  shadow-xl ltr:mr-2 rtl:ml-1 sm:col-span-3 md:col-span-4 md:mx-6 md:my-4 lg:col-span-3 2xl:col-span-2`}
+      }  ml-1 shadow-xl sm:col-span-3 md:col-span-4 md:mx-6 md:my-4 lg:col-span-3 2xl:col-span-2`}
     >
       <Link to="/" className="relative flex w-full md:flex-col md:items-center">
-        <div className="relative flex w-1/2 flex-col items-center justify-between rounded-bl-xl rounded-tl-xl bg-slate-400/30 px-1 py-2 rtl:order-2 md:w-full md:rounded-bl-none md:rounded-tr-xl md:px-6 rtl:md:order-none">
+        <div className="relative order-2 flex w-1/2 flex-col items-center justify-between rounded-bl-xl rounded-tl-xl bg-slate-400/30 px-1 py-2 md:order-none md:w-full md:rounded-bl-none md:rounded-tr-xl md:px-6">
           <div className="flex h-full items-center">
             <Image
               src={image}
@@ -38,7 +38,7 @@ const ProductCard = ({ image, name, price }: Props) => {
           </div>
         </div>
         <div
-          className={`flex w-1/2 flex-grow flex-col justify-between ${
+          className={`flex w-1/2 flex-grow flex-col justify-between rounded-bl-lg rounded-br-lg ${
             colorMode === "dark" ? "bg-[#1E293B]" : "bg-[#FCFBFF]"
           }  px-1 py-2 md:w-full md:px-3 md:py-4`}
         >

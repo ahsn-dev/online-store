@@ -106,8 +106,8 @@ const ProductsGroup = () => {
                   <span>دیدن تمامی محصولات این دسته</span>
                   <BiChevronLeft />
                 </div>
-                <Flex gap="12rem">
-                  <Flex direction="column" gap="12px">
+                <Flex>
+                  <Flex direction="column" gap="12px" width="100%">
                     <span className="goodsSpan hoverTextColor">
                       لپتاپ و لوازم جانبی
                     </span>
@@ -122,7 +122,7 @@ const ProductsGroup = () => {
                       <li>سونی</li>
                     </ul>
                   </Flex>
-                  <Flex direction="column" gap="12px">
+                  <Flex direction="column" gap="12px" width="100%">
                     <span className="goodsSpan hoverTextColor">
                       موبایل و لوازم جانبی
                     </span>
@@ -133,6 +133,26 @@ const ProductsGroup = () => {
                       <li>نوکیا</li>
                       <li>سونی</li>
                       <li>بلک بری</li>
+                    </ul>
+                  </Flex>
+                  <Flex direction="column" gap="12px" width="100%">
+                    <span className="goodsSpan hoverTextColor">
+                      کامپیوتر و لوازم جانبی
+                    </span>
+                    <ul className="mobileList flex flex-col gap-y-4">
+                      <li>مانیتور</li>
+                      <li>ماوس</li>
+                      <li>کیبورد</li>
+                      <li>هارد، فلش و SSD</li>
+                    </ul>
+                  </Flex>
+                  <Flex direction="column" gap="12px" width="100%">
+                    <span className="goodsSpan hoverTextColor">موارد دیگر</span>
+                    <ul className="mobileList flex flex-col gap-y-4">
+                      <li>تبلت</li>
+                      <li>پاوربانک</li>
+                      <li>اسپیکر بلوتوث و با سیم</li>
+                      <li>هدفون، هدست و هندزفری</li>
                     </ul>
                   </Flex>
                 </Flex>
