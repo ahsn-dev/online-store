@@ -22,7 +22,7 @@ const NavBar = () => {
       <HStack
         padding="10px"
         gap={8}
-        backgroundColor={colorMode === "dark" ? "#1A202C" : "#f3f4f5"}
+        backgroundColor={colorMode === "dark" ? "#0f172a" : "#f3f4f5"}
       >
         <Link to="/">
           <Image src={logo} boxSize="80px" objectFit="cover" borderRadius={4} />

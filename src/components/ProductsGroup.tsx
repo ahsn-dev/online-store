@@ -28,7 +28,7 @@ const ProductsGroup = () => {
       padding={4}
       paddingTop={0}
       display={{ base: "none", md: "flex" }}
-      backgroundColor={colorMode === "dark" ? "#1A202C" : "#f3f4f5"}
+      backgroundColor={colorMode === "dark" ? "#0f172a" : "#f3f4f5"}
     >
       <Flex
         align="center"
