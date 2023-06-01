@@ -28,7 +28,10 @@ const ProductCard = ({ image, name, price }: Props) => {
         colorMode === "dark" ? "bg-[#414E60]" : "bg-[#DDE0EA]"
       }  ml-1 shadow-xl sm:col-span-3 md:col-span-4 md:mx-6 md:my-4 lg:col-span-3 2xl:col-span-2`}
     >
-      <Link to="/" className="relative flex w-full md:flex-col md:items-center">
+      <Link
+        to="/productPage"
+        className="relative flex w-full md:flex-col md:items-center"
+      >
         <div className="relative order-2 flex w-1/2 flex-col items-center justify-between rounded-bl-xl rounded-tl-xl bg-slate-400/30 px-1 py-2 md:order-none md:w-full md:rounded-bl-none md:rounded-tr-xl md:px-6">
           <div className="flex h-full items-center">
             <Image

@@ -28,14 +28,6 @@ const Cart = () => {
                   to="/"
                   className="flex flex-grow flex-wrap items-center justify-center sm:flex-nowrap"
                 >
-                  {/* <div className="sm:min-w-[100px] md:min-w-[130px]">
-                    <span className="relative m-0 box-border inline-block h-auto w-auto max-w-full overflow-hidden border-0 bg-none p-0 opacity-100">
-                      <Image
-                        src={mouse}
-                        className="absolute inset-0 m-auto box-border block h-0 max-h-full min-h-full w-0 min-w-full max-w-full border-0 object-contain p-0"
-                      />
-                    </span>
-                  </div> */}
                   <div>
                     <Image src={mouse} width={200} />
                   </div>
@@ -138,7 +130,7 @@ const Cart = () => {
               </div>
             </div>
           </div>
-          <Link to="/">
+          <Link to="/finalizePurchase">
             <Button
               style={{ backgroundColor: "#A71B4A" }}
               className="mx-auto block w-full rounded-lg py-3 text-center text-white shadow-lg md:mt-8"

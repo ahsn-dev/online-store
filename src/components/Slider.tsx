@@ -36,7 +36,7 @@ const Slider = () => {
         autoPlay
         autoPlaySpeed={2800}
         centerMode={false}
-        className="sm z-10 mr-32 w-[1024px] pt-8 lg:mx-auto lg:w-[1300px]"
+        className="sm z-10 mb-20 mr-32 w-[1024px] pt-8 lg:mx-auto lg:w-[1300px]"
         containerClass="container-with-dots"
         dotListClass=""
         draggable

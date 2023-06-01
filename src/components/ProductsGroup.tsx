@@ -102,10 +102,12 @@ const ProductsGroup = () => {
                 </li>
               </ul>
               <div className="w-full px-8 py-4">
-                <div className="hoverTextColor mb-8 flex items-center gap-x-4">
-                  <span>دیدن تمامی محصولات این دسته</span>
-                  <BiChevronLeft />
-                </div>
+                <Link to="/products">
+                  <div className="hoverTextColor mb-8 flex items-center gap-x-4">
+                    <span>دیدن تمامی محصولات این دسته</span>
+                    <BiChevronLeft />
+                  </div>
+                </Link>
                 <Flex>
                   <Flex direction="column" gap="12px" width="100%">
                     <span className="goodsSpan hoverTextColor">
