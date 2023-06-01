@@ -37,7 +37,7 @@ const NavBar = () => {
           <Link to="/adminPanel">
             <Button
               leftIcon={<IoMdArrowForward />}
-              colorScheme="teal"
+              colorScheme="cyan"
               variant="outline"
             >
               پنل مدیریت
@@ -46,7 +46,7 @@ const NavBar = () => {
           <Link to="/cart">
             <Button
               leftIcon={<AiOutlineShoppingCart />}
-              colorScheme="teal"
+              colorScheme="cyan"
               variant="solid"
             >
               سبد خرید

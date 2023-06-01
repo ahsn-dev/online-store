@@ -6,8 +6,9 @@ import { Box, useColorMode } from "@chakra-ui/react";
 // import ProductsCategory from "../components/ProductsCategory";
 // import LatestProducts from "../components/LatestProducts";
 import Footer from "../components/Footer";
+import FinalizePurchase from "./FinalizePurchase";
 // import Cart from "./Cart";
-import Products from "./Products";
+// import Products from "./Products";
 // import ProductPage from "./ProductPage";
 
 const Layout = () => {
@@ -22,8 +23,9 @@ const Layout = () => {
       }
     >
       <NavBar />
+      <FinalizePurchase />
       {/* <Cart /> */}
-      <Products />
+      {/* <Products /> */}
       {/* <ProductPage /> */}
       {/* <Slider />
       <Info />
