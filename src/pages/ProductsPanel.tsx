@@ -1,191 +1,111 @@
-import React, { useState } from "react";
 import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Select,
-  Flex,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  HStack,
+  Text,
+  Image,
 } from "@chakra-ui/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-// import Cookies from "universal-cookie";
-import axios from "axios";
+import { FcEditImage, FcEmptyTrash } from "react-icons/fc";
+import mouse from "../assets/products/mouse.png";
+import headphone from "../assets/products/headphone.png";
+import ipad from "../assets/products/ipad.png";
+import AddProductModal from "../components/AddProductModal";
 
-const createProduct = async (productData: any) => {
-  //   const cookie = new Cookies();
-  const response = await axios.post(
-    "http://localhost:8000/api/products",
-    productData,
-    {
-      headers: {
-        "Content-Type": `multipart/form-data;
-        boundary=${productData._boundary}`,
-        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NTY5MzUwNCwiZXhwIjoxNjg1Nzc5OTA0fQ.gbEimNE-DYyZQiDR5LiMIW9G69cD3U80hHy3-8fDb2I"}`,
-      },
-    }
-  );
-  return response.data;
-};
-
-const ProductsPanel: React.FC = () => {
-  const mutation = useMutation(createProduct);
-
-  const [category, setCategory] = useState("");
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const image = (
-      event.currentTarget.elements as unknown as { image: { files: FileList } }
-    ).image.files;
-
-    const ProductData = new FormData();
-    const elements = event.currentTarget.querySelectorAll<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >('input:not([type="file"]), select, textarea');
-    elements.forEach((element) => {
-      ProductData.append(element.name, element.value);
-      element.value = ""; // Clear the value of each input element
-    });
-
-    for (let i = 0; i < image.length; i++) {
-      ProductData.append("images", image[i]);
-    }
-    console.log(Object.fromEntries(ProductData));
-
-    mutation.mutate(ProductData);
-  };
-
-  const fetchData = async (url: string) => {
-    const response = await axios.get(url);
-    return response.data.data;
-  };
-
-  const {
-    data: dataCategory,
-    isLoading: isLoadingCategory,
-    // isError: isErrorCategory,
-    // error: errorCategory,
-  } = useQuery(["dataCategory"], () =>
-    fetchData("http://localhost:8000/api/categories")
-  );
-
-  const {
-    data: dataSubCategory,
-    // isLoading: isLoadingSubCategory,
-    // isError: isErrorSubCategory,
-    // error: errorSubCategory,
-  } = useQuery(
-    ["dataSubCategory", category],
-    () =>
-      fetchData(`http://localhost:8000/api/subcategories?category=${category}`),
-    { enabled: !!category }
-  );
-
-  if (isLoadingCategory) {
-    return <div>Loading...</div>;
-  }
-
+const ProductsPanel = () => {
   return (
-    <Flex justifyContent={"center"} alignItems={"center"}>
-      <Box
-        as="form"
-        onSubmit={handleSubmit}
-        className="flex flex-col p-8 text-slate-800"
-      >
-        <Flex flexWrap="wrap" className="mb-4 gap-4">
-          <FormControl flex="1" mr={2}>
-            <FormLabel>نام</FormLabel>
-            <Input style={{ borderColor: "black" }} name="name" />
-          </FormControl>
-          <FormControl flex="1">
-            <FormLabel>قیمت</FormLabel>
-            <Input
-              style={{ borderColor: "black" }}
-              name="price"
-              type="number"
-            />
-          </FormControl>
-        </Flex>
-        <Flex flexWrap="wrap" className="mb-4 gap-4">
-          <FormControl flex="1" mr={2}>
-            <FormLabel>برند</FormLabel>
-            <Input style={{ borderColor: "black" }} name="brand" />
-          </FormControl>
-          <FormControl flex="1">
-            <FormLabel>موجودی</FormLabel>
-            <Input
-              style={{ borderColor: "black" }}
-              name="quantity"
-              type="number"
-            />
-          </FormControl>
-        </Flex>
-        <Flex className="mb-4 gap-4">
-          <FormControl className="pr-2">
-            <FormLabel>توضیحات</FormLabel>
-            <Input style={{ borderColor: "black" }} name="description" />
-          </FormControl>
-          <FormControl className="flex flex-wrap gap-x-4">
-            <FormLabel>انتخاب عکس محصول</FormLabel>
-            <input
-              name="image"
-              type="file"
-              multiple
-              //   onChange={handleImageSelect}
-              style={{
-                direction: "ltr",
-                border: "1px solid black",
-                padding: "2px",
-                borderRadius: "0.375rem",
-                width: "100%",
-                marginBottom: "8px",
-                // color: "transparent",
-              }}
-            />
-          </FormControl>
-        </Flex>
-        <FormControl className="pr-2">
-          <FormLabel>دسته بندی</FormLabel>
-          <Select
-            style={{ borderColor: "black", padding: "0 2rem" }}
-            name="category"
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            <option value="">انتخاب دسته بندی</option>
-            {dataCategory?.categories.map((category: any) => (
-              <option key={category._id} value={category._id}>
-                {category.name}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
-        {category && (
-          <FormControl className="mt-4 pr-2">
-            <FormLabel>زیر دسته</FormLabel>
-            <Select
-              style={{ borderColor: "black", padding: "0 2rem" }}
-              name="subcategory"
-            >
-              <option value="">انتخاب زیر دسته</option>
-              {dataSubCategory?.subcategories.map((subcategory: any) => (
-                <option key={subcategory._id} value={subcategory._id}>
-                  {subcategory.name}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-        )}
-        <Button
-          type="submit"
-          mt={8}
-          style={{ backgroundColor: "#0F4C75" }}
-          className="mx-auto"
-        >
-          اضافه کردن محصول
-        </Button>
-      </Box>
-    </Flex>
+    <>
+      <HStack className="mb-16 flex justify-between px-4">
+        <Text as="h2" className="text-2xl font-bold text-slate-600">
+          مدیریت کالاها
+        </Text>
+        <AddProductModal />
+      </HStack>
+      <TableContainer className="rounded border border-gray-400 p-2">
+        <Table variant="striped" colorScheme="twitter">
+          <Thead className="bg-blue-300 text-xl">
+            <Tr className="text-xl">
+              <Th style={{ fontSize: "18px", color: "#475569" }}>تصویر</Th>
+              <Th style={{ fontSize: "18px", color: "#475569" }}>نام کالا</Th>
+              <Th style={{ fontSize: "18px", color: "#475569" }}>دسته بندی</Th>
+              <Th
+                style={{
+                  fontSize: "18px",
+                  color: "#475569",
+                  paddingRight: "40px",
+                }}
+              >
+                عملیات
+              </Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            <Tr>
+              <Td>
+                <Image src={mouse} className="w-16" />
+              </Td>
+              <Td>Corsair Ironclaw RGB 18000 DPI Optical Gaming Mouse</Td>
+              <Td>ماوس</Td>
+              <Td>
+                <div className="flex items-center gap-x-4">
+                  <button>
+                    <FcEditImage className="text-3xl" />
+                  </button>
+                  <button>
+                    <FcEmptyTrash className="text-3xl" />
+                  </button>
+                </div>
+              </Td>
+            </Tr>
+            <Tr>
+              <Td>
+                <Image src={headphone} className="w-16" />
+              </Td>
+              <Td>
+                Beats by Dr. Dre Studio3 Skyline Over-Ear Noise Cancelling
+                Bluetooth Headphones
+                {/* - Midnight Black */}
+              </Td>
+              <Td>هدفون</Td>
+              <Td>
+                <div className="flex items-center gap-x-4">
+                  <button>
+                    <FcEditImage className="text-3xl" />
+                  </button>
+                  <button>
+                    <FcEmptyTrash className="text-3xl" />
+                  </button>
+                </div>
+              </Td>
+            </Tr>
+            <Tr>
+              <Td>
+                <Image src={ipad} className="w-16" />
+              </Td>
+              <Td>
+                SteelSeries Apex Pro Backlit Mechanical OmniPoint Gaming
+                Keyboard - English
+              </Td>
+              <Td>کیبورد</Td>
+              <Td>
+                <div className="flex items-center gap-x-4">
+                  <button>
+                    <FcEditImage className="text-3xl" />
+                  </button>
+                  <button>
+                    <FcEmptyTrash className="text-3xl" />
+                  </button>
+                </div>
+              </Td>
+            </Tr>
+          </Tbody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
 

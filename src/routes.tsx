@@ -6,9 +6,10 @@ import Cart from "./pages/Cart";
 import Products from "./pages/Products";
 import ProductPage from "./pages/ProductPage";
 import FinalizePurchase from "./pages/FinalizePurchase";
-import PanelLayout from "./pages/PanelLayout";
+import LayoutPanel from "./pages/LayoutPanel";
 import LoginPanel from "./pages/LoginPanel";
 import ProductsPanel from "./pages/ProductsPanel";
+import InventoryPanel from "./pages/InventoryPanel";
 
 const router = createBrowserRouter([
   {
@@ -48,11 +49,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/panel",
-    element: <PanelLayout />,
+    element: <LayoutPanel />,
     children: [
       {
         path: "panel/productsPanel",
         element: <ProductsPanel />,
+      },
+      {
+        path: "panel/InventoryPanel",
+        element: <InventoryPanel />,
       },
     ],
   },
