@@ -5,11 +5,19 @@ import mouse from "../assets/products/mouse.png";
 import { BsCartPlus } from "react-icons/bs";
 import Info from "../components/Info";
 import { useState } from "react";
+import { BiTrash } from "react-icons/bi";
 const ProductPage = () => {
   const [like, setLike] = useState(false);
+  const [value, setValue] = useState(1);
+
   const toggleLike = () => {
     setLike((prevState) => !prevState);
   };
+
+  const handleInputChange = (event: any) => {
+    setValue(event.target.value);
+  };
+
   return (
     <>
       <main className="flex-grow md:mt-10">
@@ -75,18 +83,26 @@ const ProductPage = () => {
                       </div>
                     </div>
                     <div className="mt-6 flex cursor-pointer items-center justify-between">
-                      <div className="p-2">
+                      <div onClick={() => setValue(value + 1)} className="p-2">
                         <AiOutlinePlus className="text-2xl" />
                       </div>
                       <input
                         type="number"
-                        min={1}
-                        max={10}
-                        value={1}
+                        min="0"
+                        max="10"
                         className="mx-1 inline-block w-[70px] border-[1px] border-gray-400 py-2 ltr:pl-7 rtl:pr-8 sm:mx-4"
+                        value={value}
+                        onChange={handleInputChange}
                       />
                       <div className="p-2">
-                        <AiOutlineMinus className="text-2xl" />
+                        {value === 1 ? (
+                          <BiTrash className="text-xl text-[#A71B4A]" />
+                        ) : (
+                          <AiOutlineMinus
+                            className="text-2xl"
+                            onClick={() => setValue(value - 1)}
+                          />
+                        )}
                       </div>
                     </div>
                     <br />

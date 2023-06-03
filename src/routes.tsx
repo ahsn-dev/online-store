@@ -6,6 +6,9 @@ import Cart from "./pages/Cart";
 import Products from "./pages/Products";
 import ProductPage from "./pages/ProductPage";
 import FinalizePurchase from "./pages/FinalizePurchase";
+import PanelLayout from "./pages/PanelLayout";
+import LoginPanel from "./pages/LoginPanel";
+import ProductsPanel from "./pages/ProductsPanel";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +18,10 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
+        element: <HomePage />,
+      },
+      {
+        path: "/homePage",
         element: <HomePage />,
       },
       {
@@ -32,6 +39,20 @@ const router = createBrowserRouter([
       {
         path: "/finalizePurchase",
         element: <FinalizePurchase />,
+      },
+    ],
+  },
+  {
+    path: "/loginPanel",
+    element: <LoginPanel />,
+  },
+  {
+    path: "/panel",
+    element: <PanelLayout />,
+    children: [
+      {
+        path: "panel/productsPanel",
+        element: <ProductsPanel />,
       },
     ],
   },

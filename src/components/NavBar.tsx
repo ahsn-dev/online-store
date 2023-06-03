@@ -24,7 +24,7 @@ const NavBar = () => {
         gap={8}
         backgroundColor={colorMode === "dark" ? "#0f172a" : "#f3f4f5"}
       >
-        <Link to="/">
+        <Link to="/homePage">
           <Image src={logo} boxSize="80px" objectFit="cover" borderRadius={4} />
         </Link>
         <ColorModeSwitch />
@@ -34,7 +34,7 @@ const NavBar = () => {
           paddingRight={{ base: "0px", lg: "80px" }}
           paddingLeft={{ base: "16px" }}
         >
-          <Link to="/adminPanel">
+          <Link to="/loginPanel">
             <Button
               leftIcon={<IoMdArrowForward />}
               colorScheme="cyan"

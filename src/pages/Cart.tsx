@@ -13,6 +13,7 @@ const Cart = () => {
   const handleInputChange = (event: any) => {
     setValue(event.target.value);
   };
+
   return (
     <div className="mt-12">
       <div className="mr-24 flex items-center gap-x-2">
@@ -25,7 +26,7 @@ const Cart = () => {
             <div className="flex flex-wrap items-center border-b-2 px-2 sm:my-4 sm:py-4">
               <div className="sm:min-w-[290px] lg:w-1/2">
                 <Link
-                  to="/"
+                  to="/productPage"
                   className="flex flex-grow flex-wrap items-center justify-center sm:flex-nowrap"
                 >
                   <div>
@@ -132,8 +133,8 @@ const Cart = () => {
           </div>
           <Link to="/finalizePurchase">
             <Button
-              style={{ backgroundColor: "#A71B4A" }}
-              className="mx-auto block w-full rounded-lg py-3 text-center text-white shadow-lg md:mt-8"
+              style={{ backgroundColor: "#A71B4A", color: "white" }}
+              className="mx-auto block w-full rounded-lg py-3 text-center shadow-lg md:mt-8"
             >
               ثبت سفارش
             </Button>
