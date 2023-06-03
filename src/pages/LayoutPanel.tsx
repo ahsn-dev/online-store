@@ -1,6 +1,6 @@
 import { Box, Button, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import {
-  FcAlphabeticalSortingAz,
+  // FcAlphabeticalSortingAz,
   FcExport,
   FcInspection,
   FcMoneyTransfer,
@@ -25,7 +25,7 @@ const LayoutPanel = () => {
             as="h1"
             className="mt-8 pr-16 text-center text-2xl font-bold text-white"
           >
-            پنل مدیریت وبسایت
+            پنل مدیریت وب‌سایت
           </Text>
           <Link to="/homePage">
             <Button>بازگشت به سایت</Button>
@@ -50,18 +50,18 @@ const LayoutPanel = () => {
                 <span>موجودی و قیمت‌ها</span>
               </Box>
             </Link>
-            <Link to="/orders">
+            <Link to="panel/ordersPanel">
               <Box className="flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors">
                 <FcInspection className="text-3xl" />
                 <span>سفارش‌ها</span>
               </Box>
             </Link>
-            <Link to="/categories">
+            {/* <Link to="/categories">
               <Box className="flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors">
                 <FcAlphabeticalSortingAz className="text-3xl" />
                 <span>دسته بندی‌ها</span>
               </Box>
-            </Link>
+            </Link> */}
             <Link to="/loginPanel">
               <Box className="flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors">
                 <FcExport className="text-3xl" />
@@ -72,7 +72,6 @@ const LayoutPanel = () => {
         </Flex>
       </GridItem>
       <GridItem pl="2" area={"main"} className="bg-[#BBE1FA]">
-        {/* <ProductsPanel /> */}
         <Box padding={5}>
           <Outlet />
         </Box>

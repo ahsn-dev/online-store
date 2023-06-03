@@ -15,7 +15,7 @@ const InventoryPanel = () => {
   return (
     <>
       <HStack className="mb-16 flex justify-between px-4">
-        <Text as="h2" className="text-2xl font-bold text-slate-600">
+        <Text as="h2" className="text-2xl font-bold text-slate-700">
           مدیریت موجودی و قیمت‌ها
         </Text>
         <Button style={{ backgroundColor: "#3382B7" }}>ذخیره</Button>

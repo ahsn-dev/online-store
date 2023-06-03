@@ -113,8 +113,10 @@ const AddProductModal = () => {
         <ModalOverlay />
         <ModalContent>
           <Flex className="flex-col items-end rounded-sm bg-slate-400">
-            <ModalCloseButton className="mt-[6px] bg-slate-400" />
-            <ModalHeader>افزودن/ویرایش کالا</ModalHeader>
+            <ModalCloseButton className="mt-[6px] bg-slate-400 text-slate-800" />
+            <ModalHeader className="text-slate-800">
+              افزودن/ویرایش کالا
+            </ModalHeader>
           </Flex>
           <ModalBody pb={6} className="rounded-sm bg-slate-400">
             <Flex justifyContent={"center"} alignItems={"center"}>
