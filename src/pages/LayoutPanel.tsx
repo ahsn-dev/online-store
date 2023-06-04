@@ -16,10 +16,10 @@ const LayoutPanel = () => {
                   "nav main"`}
       gridTemplateRows={"100px 1fr 30px"}
       gridTemplateColumns={"350px 1fr"}
-      h="100%"
+      h="100vh"
       fontWeight="bold"
     >
-      <GridItem pl="2" area={"header"} className="h-screen bg-[#1B262C]">
+      <GridItem pl="2" area={"header"} className="bg-[#1B262C]">
         <Flex className="items-baseline justify-between">
           <Text
             as="h1"
@@ -32,7 +32,7 @@ const LayoutPanel = () => {
           </Link>
         </Flex>
       </GridItem>
-      <GridItem pl="2" area={"nav"} className="h-screen bg-[#3282B8]">
+      <GridItem pl="2" area={"nav"} className="h-full bg-[#3282B8]">
         <Flex className="h-full items-center justify-evenly">
           <Flex className="h-full flex-col items-center justify-evenly">
             <Link to="panel/productsPanel">

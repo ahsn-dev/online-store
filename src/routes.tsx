@@ -10,7 +10,7 @@ import LayoutPanel from "./pages/LayoutPanel";
 import LoginPanel from "./pages/LoginPanel";
 import ProductsPanel from "./pages/ProductsPanel";
 import InventoryPanel from "./pages/InventoryPanel";
-import OrdersPanel from "./pages/ordersPanel";
+import OrdersPanel from "./pages/OrdersPanel";
 
 const router = createBrowserRouter([
   {
