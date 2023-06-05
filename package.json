@@ -22,7 +22,7 @@
     "match-sorter": "^6.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hook-form": "^7.44.2",
+    "react-hook-form": "^7.44.3",
     "react-icons": "^4.8.0",
     "react-multi-carousel": "^2.8.4",
     "react-router-dom": "^6.11.2",
@@ -30,6 +30,7 @@
     "sort-by": "^0.0.2",
     "universal-cookie": "^4.0.4",
     "yup": "^1.2.0",
+    "zod": "^3.21.4",
     "zustand": "^4.3.8"
   },
   "devDependencies": {

@@ -13,6 +13,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { useState, useMemo } from "react";
+import CheckOrderModal from "../components/CheckOrderModal";
 
 const OrdersPanel = () => {
   const [value, setValue] = useState("all");
@@ -155,9 +156,7 @@ const OrdersPanel = () => {
                 <Td>{order.amount}</Td>
                 <Td>{order.orderTime}</Td>
                 <Td>
-                  <button className="underline underline-offset-[5px]">
-                    بررسی سفارش
-                  </button>
+                  <CheckOrderModal />
                 </Td>
               </Tr>
             ))}

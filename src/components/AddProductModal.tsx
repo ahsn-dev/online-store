@@ -28,7 +28,7 @@ const createProduct = async (productData: any) => {
       headers: {
         "Content-Type": `multipart/form-data;
           boundary=${productData._boundary}`,
-        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NTc5OTYzMiwiZXhwIjoxNjg1ODg2MDMyfQ.70vNFVGDCiWMuCdUVOvaw-m9lS8it8EZOgaAbF0vMWg"}`,
+        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NTg2MDk4NCwiZXhwIjoxNjg1OTQ3Mzg0fQ.LZJMvUQcaIt-ymrtf54mBnuzRAemXmWruuaPqPaWJ9s"}`,
       },
     }
   );
@@ -128,7 +128,11 @@ const AddProductModal = () => {
                 <Flex flexWrap="wrap" className="mb-4 gap-4">
                   <FormControl flex="1" mr={2}>
                     <FormLabel>نام</FormLabel>
-                    <Input style={{ borderColor: "black" }} name="name" />
+                    <Input
+                      ref={initialRef}
+                      style={{ borderColor: "black" }}
+                      name="name"
+                    />
                   </FormControl>
                   <FormControl flex="1">
                     <FormLabel>قیمت</FormLabel>
