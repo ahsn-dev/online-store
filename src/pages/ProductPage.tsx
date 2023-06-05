@@ -5,7 +5,6 @@ import mouse from "../assets/products/mouse.png";
 import { BsCartPlus } from "react-icons/bs";
 import Info from "../components/Info";
 import { useState } from "react";
-import { BiTrash } from "react-icons/bi";
 const ProductPage = () => {
   const [like, setLike] = useState(false);
   const [value, setValue] = useState(1);
@@ -95,19 +94,17 @@ const ProductPage = () => {
                         onChange={handleInputChange}
                       />
                       <div className="p-2">
-                        {value === 1 ? (
-                          <BiTrash className="text-xl text-[#A71B4A]" />
-                        ) : (
-                          <AiOutlineMinus
-                            className="text-2xl"
-                            onClick={() => setValue(value - 1)}
-                          />
-                        )}
+                        <AiOutlineMinus
+                          className="text-2xl"
+                          onClick={() =>
+                            setValue(value > 1 ? value - 1 : value)
+                          }
+                        />
                       </div>
                     </div>
                     <br />
-                    <button className="text-palette-side flex cursor-pointer items-center gap-x-2 rounded-lg border-none bg-[#A71B4A]/90 px-3 py-4 text-[12px] shadow-lg transition-colors duration-200 hover:bg-[#A71B4A]/100 sm:text-base lg:px-8">
-                      <BsCartPlus />
+                    <button className="text-palette-side flex cursor-pointer items-center gap-x-2 rounded-lg border-none bg-[#A71B4A]/90 px-3 py-4 text-[12px] text-white shadow-lg transition-colors duration-200 hover:bg-[#A71B4A]/100 sm:text-base lg:px-8">
+                      <BsCartPlus className="text-white" />
                       اضافه به سبد خرید
                     </button>
                   </div>

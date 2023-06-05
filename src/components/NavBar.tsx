@@ -48,6 +48,7 @@ const NavBar = () => {
               leftIcon={<AiOutlineShoppingCart />}
               colorScheme="cyan"
               variant="solid"
+              color={colorMode === "dark" ? "#0f172a" : "#f3f4f5"}
             >
               سبد خرید
             </Button>

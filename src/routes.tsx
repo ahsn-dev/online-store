@@ -23,23 +23,23 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: "/homePage",
+        path: "homePage",
         element: <HomePage />,
       },
       {
-        path: "/productPage:slug",
+        path: "productPage",
         element: <ProductPage />,
       },
       {
-        path: "/cart",
+        path: "cart",
         element: <Cart />,
       },
       {
-        path: "/products:slug",
+        path: "products:slug",
         element: <Products />,
       },
       {
-        path: "/finalizePurchase",
+        path: "finalizePurchase",
         element: <FinalizePurchase />,
       },
     ],
