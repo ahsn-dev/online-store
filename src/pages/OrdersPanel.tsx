@@ -12,102 +12,114 @@ import {
   Radio,
   Stack,
 } from "@chakra-ui/react";
-import { useState, useMemo } from "react";
 import CheckOrderModal from "../components/CheckOrderModal";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-const OrdersPanel = () => {
-  const [value, setValue] = useState("all");
-  const [currentPage, setCurrentPage] = useState(1);
+interface Order {
+  _id: string;
+  user: string;
+  products: {
+    product: string;
+    count: number;
+    _id: string;
+  }[];
+  totalPrice: number;
+  deliveryDate: string;
+  deliveryStatus: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface User {
+  _id: string;
+  username: string;
+}
+
+const OrdersPanel = (): JSX.Element => {
+  const [value, setValue] = useState<string>("all");
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 4;
 
-  const filteredOrders = useMemo(() => {
-    const orders = [
-      {
-        id: 1,
-        name: "علی",
-        amount: "920,000",
-        orderTime: "20/10/2023",
-        status: "waiting",
-      },
-      {
-        id: 2,
-        name: "محمد",
-        amount: "920,000",
-        orderTime: "20/10/2023",
-        status: "done",
-      },
-      {
-        id: 3,
-        name: "حسین",
-        amount: "920,000",
-        orderTime: "20/10/2023",
-      },
-      {
-        id: 4,
-        name: "فاطمه",
-        amount: "920,000",
-        orderTime: "20/10/2023",
-      },
-      {
-        id: 5,
-        name: "زهرا",
-        amount: "920,000",
-        orderTime: "20/10/2023",
-      },
-      {
-        id: 6,
-        name: "رضا",
-        amount: "920,000",
-        orderTime: "20/10/2023",
-      },
-      {
-        id: 7,
-        name: "نگار",
-        amount: "920,000",
-        orderTime: "20/10/2023",
-      },
-      {
-        id: 8,
-        name: "سارا",
-        amount: "920,000",
-        orderTime: "20/10/2023",
-      },
-      {
-        id: 9,
-        name: "ناهید",
-        amount: "920,000",
-        orderTime: "20/10/2023",
-      },
-      {
-        id: 10,
-        name: "بهاره",
-        amount: "920,000",
-        orderTime: "20/10/2023",
-      },
-    ];
+  const fetchOrders = async (): Promise<Order[]> => {
+    const response = await fetch("http://localhost:8000/api/orders");
+    const data = await response.json();
+    return data.data.orders;
+  };
 
+  const fetchUsers = async (): Promise<User[]> => {
+    const response = await axios.get("http://localhost:8000/api/users", {
+      headers: {
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NjE0MDg2MCwiZXhwIjoxNjg4NzMyODYwfQ.nTzTVahjTWnUswV9GeeaPn-zMNWFzwwU1-BD0Jm_Lfg",
+      },
+    });
+    return response.data.data.users;
+  };
+
+  const {
+    data: orders,
+    isLoading: ordersLoading,
+    isError: ordersError,
+  } = useQuery<Order[]>(["orders"], fetchOrders);
+  const {
+    data: users,
+    isLoading: usersLoading,
+    isError: usersError,
+  } = useQuery<User[]>(["users"], fetchUsers);
+
+  const filteredOrders = useMemo(() => {
+    if (!orders) return [];
     switch (value) {
       case "waiting":
-        return orders.filter((order) => order.status === "waiting");
+        return orders.filter((order) => order.deliveryStatus === true);
       case "done":
-        return orders.filter((order) => order.status === "done");
+        return orders.filter((order) => order.deliveryStatus === false);
       default:
         return orders;
     }
-  }, [value]);
+  }, [orders, value]);
 
-  const maxPages = Math.ceil(filteredOrders.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentData = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
+  const formatPrice = (price: number): string => {
+    const formattedPrice = price.toLocaleString();
+    return formattedPrice;
+  };
 
-  const handleNextPage = () => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleDateString("en-US");
+    return formattedDate;
+  };
+
+  const maxPages: number = Math.ceil(filteredOrders.length / itemsPerPage);
+  const indexOfLastItem: number = currentPage * itemsPerPage;
+  const indexOfFirstItem: number = indexOfLastItem - itemsPerPage;
+  const currentData: Order[] = filteredOrders.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+
+  const handleNextPage = (): void => {
     setCurrentPage((prev) => prev + 1);
   };
 
-  const handlePrevPage = () => {
+  const handlePrevPage = (): void => {
     setCurrentPage((prev) => prev - 1);
   };
+
+  if (ordersLoading || usersLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (ordersError || usersError) {
+    return <div>Error fetching data</div>;
+  }
+
+  const userIdToUsernameMap: { [key: string]: string } = {};
+  users.forEach((user) => {
+    userIdToUsernameMap[user._id] = user.username;
+  });
 
   return (
     <>
@@ -115,47 +127,85 @@ const OrdersPanel = () => {
         <Text as="h2" className="text-2xl font-bold text-slate-700">
           مدیریت سفارش‌ها
         </Text>
-        <RadioGroup onChange={setValue} value={value} dir="ltr">
-          <Stack direction="row" className="text-slate-700">
+        <RadioGroup
+          dir="ltr"
+          defaultValue="all"
+          onChange={(value) => setValue(value)}
+        >
+          <Stack
+            direction="row"
+            className="text-slate-700"
+            style={{ display: "flex", gap: "1rem" }}
+          >
+            <Radio value="all" className="bg-blue-300">
+              همه
+            </Radio>
             <Radio value="waiting" className="bg-blue-300">
-              سفارش‌های در انتظار ارسال
+              در انتظار تحویل
             </Radio>
             <Radio value="done" className="bg-blue-300">
-              سفارش‌های تحویل شده
-            </Radio>
-            <Radio value="all" className="bg-blue-300">
-              همه‌ی سفارشات
+              تحویل داده شده
             </Radio>
           </Stack>
         </RadioGroup>
       </HStack>
+
       <TableContainer className="rounded border border-gray-400 p-2">
-        <Table variant="striped" colorScheme="twitter">
+        <Table className="w-full" variant="striped" colorScheme="twitter">
           <Thead className="bg-blue-300 text-xl">
             <Tr className="text-xl">
-              <Th style={{ fontSize: "18px", color: "#475569" }}>نام کاربر</Th>
-              <Th style={{ fontSize: "18px", color: "#475569" }}>مجموع مبلغ</Th>
-              <Th style={{ fontSize: "18px", color: "#475569" }}>
+              <Th
+                style={{
+                  fontSize: "18px",
+                  color: "#475569",
+                  textAlign: "center",
+                }}
+              >
+                نام کاربر
+              </Th>
+              <Th
+                style={{
+                  fontSize: "18px",
+                  color: "#475569",
+                  textAlign: "center",
+                }}
+              >
+                مجموع مبلغ
+              </Th>
+              <Th
+                style={{
+                  fontSize: "18px",
+                  color: "#475569",
+                  textAlign: "center",
+                }}
+              >
                 زمان ثبت سفارش
               </Th>
               <Th
                 style={{
                   fontSize: "18px",
                   color: "#475569",
-                  paddingRight: "46px",
+                  textAlign: "center",
+                  // paddingRight: "46px",
                 }}
               >
                 جزئیات
               </Th>
             </Tr>
           </Thead>
-          <Tbody>
+          <Tbody style={{ color: "midnightblue" }}>
             {currentData.map((order) => (
-              <Tr key={order.id}>
-                <Td>{order.name}</Td>
-                <Td>{order.amount}</Td>
-                <Td>{order.orderTime}</Td>
-                <Td>
+              <Tr key={order._id}>
+                <Td style={{ textAlign: "center" }}>
+                  {userIdToUsernameMap[order.user]}
+                </Td>
+                <Td style={{ textAlign: "center" }}>
+                  {formatPrice(order.totalPrice)}
+                </Td>
+                <Td style={{ textAlign: "center" }}>
+                  {formatDate(order.createdAt)}
+                </Td>
+                <Td style={{ textAlign: "center" }}>
                   <CheckOrderModal />
                 </Td>
               </Tr>
@@ -170,6 +220,9 @@ const OrdersPanel = () => {
           >
             صفحه قبلی
           </button>
+          <Text className="flex items-center text-2xl text-blue-400">
+            {currentPage}
+          </Text>
           <button
             disabled={currentPage === maxPages}
             onClick={handleNextPage}
