@@ -11,96 +11,65 @@ import {
   Text,
   Button,
 } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchProducts = async () => {
+  const response = await fetch(
+    "http://localhost:8000/api/products?fields=price,name,quantity&limit=all"
+  );
+  const data = await response.json();
+  return data.data.products;
+};
+
+type Product = {
+  _id: string;
+  name: string;
+  price: number;
+  quantity: number;
+};
+
+const formatPrice = (price: number): string => {
+  const formattedPrice = price.toLocaleString();
+  return formattedPrice;
+};
+
+const truncateText = (text: string, limit: number): string => {
+  if (text.length <= limit) {
+    return text;
+  }
+  return text.slice(0, limit) + "...";
+};
 
 const InventoryPanel = () => {
-  const itemsPerPage = 2;
-  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6;
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const data = [
-    {
-      id: 1,
-      name: "Corsair Ironclaw RGB 18000 DPI Optical Gaming Mouse",
-      price: 1000,
-      quantity: 200,
-    },
-    {
-      id: 2,
-      name: "Beats by Dr. Dre Studio3 Skyline Over-Ear Noise Cancelling Bluetooth Headphones",
-      price: 8000,
-      quantity: 4,
-    },
-    {
-      id: 3,
-      name: "SteelSeries Apex Pro Backlit Mechanical OmniPoint Gaming Keyboard - English",
-      price: 7000,
-      quantity: 700,
-    },
-    {
-      id: 4,
-      name: "Corsair Ironclaw RGB 18000 DPI Optical Gaming Mouse",
-      price: 1000,
-      quantity: 2,
-    },
-    {
-      id: 5,
-      name: "Beats by Dr. Dre Studio3 Skyline Over-Ear Noise Cancelling Bluetooth Headphones",
-      price: 8000,
-      quantity: 400,
-    },
-    {
-      id: 6,
-      name: "SteelSeries Apex Pro Backlit Mechanical OmniPoint Gaming Keyboard - English",
-      price: 7000,
-      quantity: 7,
-    },
-    {
-      id: 7,
-      name: "Corsair Ironclaw RGB 18000 DPI Optical Gaming Mouse",
-      price: 1000,
-      quantity: 2000,
-    },
-    {
-      id: 8,
-      name: "Beats by Dr. Dre Studio3 Skyline Over-Ear Noise Cancelling Bluetooth Headphones",
-      price: 8000,
-      quantity: 4,
-    },
-    {
-      id: 9,
-      name: "SteelSeries Apex Pro Backlit Mechanical OmniPoint Gaming Keyboard - English",
-      price: 7000,
-      quantity: 7,
-    },
-    {
-      id: 10,
-      name: "Corsair Ironclaw RGB 18000 DPI Optical Gaming Mouse",
-      price: 1000,
-      quantity: 2,
-    },
-    {
-      id: 11,
-      name: "Beats by Dr. Dre Studio3 Skyline Over-Ear Noise Cancelling Bluetooth Headphones",
-      price: 8000,
-      quantity: 4000,
-    },
-    {
-      id: 12,
-      name: "SteelSeries Apex Pro Backlit Mechanical OmniPoint Gaming Keyboard - English",
-      price: 7000,
-      quantity: 7,
-    },
-  ];
+  const {
+    data: products,
+    isLoading,
+    isError,
+  } = useQuery(["products"], fetchProducts);
 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+  if (isError) {
+    return <div>Error fetching data</div>;
+  }
+
+  const maxPages = Math.ceil(products.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = products.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => prev + 1);
   };
 
-  const paginatedData = data.slice(
-    currentPage * itemsPerPage,
-    (currentPage + 1) * itemsPerPage
-  );
+  const handlePrevPage = () => {
+    setCurrentPage((prev) => prev - 1);
+  };
 
   return (
     <>
@@ -115,40 +84,58 @@ const InventoryPanel = () => {
           <Thead className="bg-blue-300 text-xl">
             <Tr className="text-xl">
               <Th style={{ fontSize: "18px", color: "#475569" }}>کالا</Th>
-              <Th style={{ fontSize: "18px", color: "#475569" }}>قیمت</Th>
               <Th
                 style={{
                   fontSize: "18px",
                   color: "#475569",
-                  paddingRight: "48px",
+                  textAlign: "center",
+                }}
+              >
+                قیمت
+              </Th>
+              <Th
+                style={{
+                  fontSize: "18px",
+                  color: "#475569",
+                  textAlign: "center",
                 }}
               >
                 موجودی
               </Th>
             </Tr>
           </Thead>
-          <Tbody>
-            {paginatedData.map((item) => (
-              <Tr key={item.id}>
-                <Td>{item.name}</Td>
-                <Td>{item.price}</Td>
+          <Tbody style={{ color: "midnightblue" }}>
+            {currentData.map((item: Product) => (
+              <Tr key={item._id}>
+                <Td>{truncateText(item.name, 80)}</Td>
+                <Td style={{ textAlign: "center" }}>
+                  {formatPrice(item.price)}
+                </Td>
                 <Td style={{ textAlign: "center" }}>{item.quantity}</Td>
               </Tr>
             ))}
           </Tbody>
         </Table>
-        <div className="mt-4 flex justify-center">
-          {[...Array(totalPages)].map((_, i) => (
-            <button
-              key={i}
-              className={`mx-2 ${
-                i === currentPage ? "bg-blue-500 text-white" : "bg-gray-200"
-              } rounded-md px-3 py-1`}
-              onClick={() => handlePageChange(i)}
-            >
-              {i + 1}
-            </button>
-          ))}
+        <div className="flex justify-center pt-4">
+          <button
+            disabled={currentPage === 1}
+            onClick={handlePrevPage}
+            className="mx-2 rounded bg-blue-300 p-2 font-bold text-white"
+          >
+            صفحه قبلی
+          </button>
+          {
+            <Text className="flex items-center text-2xl text-blue-400">
+              {currentPage}
+            </Text>
+          }
+          <button
+            disabled={currentPage === maxPages}
+            onClick={handleNextPage}
+            className="mx-2 rounded bg-blue-300 p-2 font-bold text-white"
+          >
+            صفحه بعدی
+          </button>
         </div>
       </TableContainer>
     </>
