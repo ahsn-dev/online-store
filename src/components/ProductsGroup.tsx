@@ -13,13 +13,80 @@ import { IoShirtOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { MdOutlineToys } from "react-icons/md";
 import { CgGym } from "react-icons/cg";
+import { useQuery } from "@tanstack/react-query";
 
-const ProductsGroup = () => {
+type Category = {
+  _id: string;
+  name: string;
+  icon: string;
+  createdAt: string;
+  updatedAt: string;
+  slugname: string;
+};
+
+type Subcategory = {
+  _id: string;
+  category: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  slugname: string;
+};
+
+interface MyError extends Error {
+  message: string;
+}
+
+async function fetchCategories(): Promise<Category[]> {
+  const response = await fetch("http://localhost:8000/api/categories");
+  const data = await response.json();
+  return data.data.categories;
+}
+
+async function fetchSubcategories(): Promise<Subcategory[]> {
+  const response = await fetch(
+    "http://localhost:8000/api/subcategories?limit=all"
+  );
+  const data = await response.json();
+  return data.data.subcategories;
+}
+
+const ProductsGroup: React.FC = () => {
   const { colorMode } = useColorMode();
   const [showChild, setShowChild] = useState(false);
 
   const toggleChild = () => {
     setShowChild((prevState) => !prevState);
+  };
+
+  const {
+    isLoading: categoriesLoading,
+    error: categoriesError,
+    data: categoriesData,
+  } = useQuery<Category[], MyError>(["categories"], fetchCategories);
+
+  const {
+    isLoading: subcategoriesLoading,
+    error: subcategoriesError,
+    data: subcategoriesData,
+  } = useQuery<Subcategory[], MyError>(["subcategories"], fetchSubcategories);
+
+  if (categoriesLoading || subcategoriesLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (categoriesError || subcategoriesError) {
+    return (
+      <div>
+        Error: {categoriesError?.message || subcategoriesError?.message}
+      </div>
+    );
+  }
+
+  const getCategorySubcategories = (categoryId: string) => {
+    return subcategoriesData?.filter(
+      (subcategory) => subcategory.category === categoryId
+    );
   };
 
   return (
@@ -41,6 +108,7 @@ const ProductsGroup = () => {
       >
         <BsList className="text-2xl" />
         <span>دسته بندی کالاها</span>
+
         {showChild && (
           <Box
             className={`fade absolute top-8 h-[430px] w-[1374px] rounded-bl rounded-br ${
@@ -51,7 +119,7 @@ const ProductsGroup = () => {
             onMouseOver={toggleChild}
             onMouseLeave={toggleChild}
           >
-            <Flex justify={"space-between"}>
+            <Flex justify={"space-between"} height="100%">
               <ul
                 className={`flex flex-col justify-between gap-y-6 border-l-2 ${
                   colorMode === "dark" ? "border-l-white" : "border-l-gray-400"
@@ -103,60 +171,39 @@ const ProductsGroup = () => {
               </ul>
               <div className="w-full px-8 py-4">
                 <Link to="/products">
-                  <div className="hoverTextColor mb-8 flex items-center gap-x-4">
+                  <div className="mb-8 flex items-center gap-x-4 hover:text-[#b4184f]">
                     <span>دیدن تمامی محصولات این دسته</span>
                     <BiChevronLeft />
                   </div>
                 </Link>
-                <Flex>
-                  <Flex direction="column" gap="12px" width="100%">
-                    <span className="goodsSpan hoverTextColor">
-                      لپتاپ و لوازم جانبی
-                    </span>
-                    <ul className="laptopList flex flex-col gap-y-4">
-                      <li>اپل</li>
-                      <li>ایسوس</li>
-                      <li>لنوو</li>
-                      <li>دل</li>
-                      <li>ام اس آی</li>
-                      <li>ایسر</li>
-                      <li>اچ پی</li>
-                      <li>سونی</li>
+                <Flex gap="4rem">
+                  {categoriesData?.map((category) => (
+                    <ul>
+                      <li
+                        className="flex flex-col gap-4"
+                        style={{ alignItems: "flex-start" }}
+                        key={category._id}
+                      >
+                        <Flex direction="column" gap="12px" width="100%">
+                          <span className="goodsSpan hover:text-[#b4184f]">
+                            {category.name}
+                          </span>
+                        </Flex>
+                        <ul className="flex flex-col gap-y-4">
+                          {getCategorySubcategories(category._id)?.map(
+                            (subcategory) => (
+                              <li
+                                key={subcategory._id}
+                                className="flex flex-col items-start hover:text-[#b4184f]"
+                              >
+                                {subcategory.name}
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </li>
                     </ul>
-                  </Flex>
-                  <Flex direction="column" gap="12px" width="100%">
-                    <span className="goodsSpan hoverTextColor">
-                      موبایل و لوازم جانبی
-                    </span>
-                    <ul className="mobileList flex flex-col gap-y-4">
-                      <li>اپل</li>
-                      <li>سامسونگ</li>
-                      <li>شیائومی</li>
-                      <li>نوکیا</li>
-                      <li>سونی</li>
-                      <li>بلک بری</li>
-                    </ul>
-                  </Flex>
-                  <Flex direction="column" gap="12px" width="100%">
-                    <span className="goodsSpan hoverTextColor">
-                      کامپیوتر و لوازم جانبی
-                    </span>
-                    <ul className="mobileList flex flex-col gap-y-4">
-                      <li>مانیتور</li>
-                      <li>ماوس</li>
-                      <li>کیبورد</li>
-                      <li>هارد، فلش و SSD</li>
-                    </ul>
-                  </Flex>
-                  <Flex direction="column" gap="12px" width="100%">
-                    <span className="goodsSpan hoverTextColor">موارد دیگر</span>
-                    <ul className="mobileList flex flex-col gap-y-4">
-                      <li>تبلت</li>
-                      <li>پاوربانک</li>
-                      <li>اسپیکر بلوتوث و با سیم</li>
-                      <li>هدفون، هدست و هندزفری</li>
-                    </ul>
-                  </Flex>
+                  ))}
                 </Flex>
               </div>
             </Flex>
