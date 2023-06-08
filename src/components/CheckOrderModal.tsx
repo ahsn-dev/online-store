@@ -24,8 +24,8 @@ import { useState } from "react";
 const CheckOrderModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 2;
-  const [currentPage, setCurrentPage] = useState(0);
 
   const data = [
     {
@@ -66,16 +66,37 @@ const CheckOrderModal = () => {
     },
   ];
 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  // const totalPages = Math.ceil(data.length / itemsPerPage);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+  // const handlePageChange = (page: number) => {
+  //   setCurrentPage(page);
+  // };
+
+  // const paginatedData = data.slice(
+  //   currentPage * itemsPerPage,
+  //   (currentPage + 1) * itemsPerPage
+  // );
+
+  const maxPages = Math.ceil(data.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => prev + 1);
   };
 
-  const paginatedData = data.slice(
-    currentPage * itemsPerPage,
-    (currentPage + 1) * itemsPerPage
-  );
+  const handlePrevPage = () => {
+    setCurrentPage((prev) => prev - 1);
+  };
+
+  const truncateText = (text: string, limit: number): string => {
+    if (text.length <= limit) {
+      return text;
+    }
+    return text.slice(0, limit) + "...";
+  };
+
   return (
     <>
       {/* <Button onClick={onOpen}>Open Modal</Button> */}
@@ -148,29 +169,35 @@ const CheckOrderModal = () => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {paginatedData.map((item) => (
+                  {currentData.map((item) => (
                     <Tr key={item.id}>
-                      <Td>{item.name}</Td>
+                      <Td>{truncateText(item.name, 30)}</Td>
                       <Td>{item.price}</Td>
                       <Td style={{ textAlign: "center" }}>{item.quantity}</Td>
                     </Tr>
                   ))}
                 </Tbody>
               </Table>
-              <div className="mt-4 flex justify-center">
-                {[...Array(totalPages)].map((_, i) => (
-                  <button
-                    key={i}
-                    className={`mx-2 ${
-                      i === currentPage
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-200"
-                    } rounded-md px-3 py-1`}
-                    onClick={() => handlePageChange(i)}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
+              <div className="flex justify-center pt-4">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={handlePrevPage}
+                  className="mx-2 rounded bg-blue-300 p-2 font-bold text-white"
+                >
+                  صفحه قبلی
+                </button>
+                {
+                  <Text className="flex items-center text-2xl text-blue-400">
+                    {currentPage}
+                  </Text>
+                }
+                <button
+                  disabled={currentPage === maxPages}
+                  onClick={handleNextPage}
+                  className="mx-2 rounded bg-blue-300 p-2 font-bold text-white"
+                >
+                  صفحه بعدی
+                </button>
               </div>
             </TableContainer>
           </ModalBody>
