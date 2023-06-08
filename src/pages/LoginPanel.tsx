@@ -11,22 +11,49 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
+import axios from "axios";
 
-type LoginFormValues = {
+interface LoginFormValues {
   username: string;
   password: string;
-};
+}
+
+interface LoginRequestData {
+  username: string;
+  password: string;
+}
 
 const LoginPanel = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>(""); // add a state variable for error messages
   const { register, handleSubmit, formState } = useForm<LoginFormValues>({
-    mode: "onChange", // enable onChange mode to validate the form on every change
+    mode: "onChange",
   });
+
+  const navigate = useNavigate();
+
+  const getLogin = async (data: LoginRequestData) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/auth/login",
+        data
+      );
+      const cookie = new Cookies();
+      cookie.set("adminToken", response.data.token.accessToken);
+      cookie.set("refreshToken", response.data.token.refreshToken);
+      navigate("/panel");
+      return response.data;
+    } catch (error) {
+      setError("نام کاربری یا رمز عبور اشتباه است"); // set the error message
+    }
+  };
 
   const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
-    // Perform login logic here
+    setError(""); // clear any existing error messages
+    getLogin(data);
     setIsLoading(false);
   };
 
@@ -74,17 +101,20 @@ const LoginPanel = () => {
                   {formState.errors.password?.message}
                 </FormErrorMessage>
               </FormControl>
-              <Link to="/panel">
-                <Button
-                  className="mx-auto mt-20 w-full"
-                  type="submit"
-                  isLoading={isLoading}
-                  loadingText="در حال ورود به پنل کاربری..."
-                  disabled={!formState.isValid} // disable the button if the form is invalid
-                >
-                  ورود
-                </Button>
-              </Link>
+              {error && ( // render the error message if it exists
+                <Box color="red.500" fontWeight="bold" textAlign="center">
+                  {error}
+                </Box>
+              )}
+              <Button
+                className="mx-auto mt-20 w-full"
+                type="submit"
+                isLoading={isLoading}
+                loadingText="در حال ورود به پنل کاربری..."
+                disabled={!formState.isValid}
+              >
+                ورود
+              </Button>
             </Stack>
           </form>
           <Box mt={6}>
