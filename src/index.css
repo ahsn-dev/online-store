@@ -37,14 +37,14 @@
   border-color: #b4184f;
 }
 
-.hoverTextColor:hover {
+/* .hoverTextColor:hover {
   color: #b4184f;
 }
 
 .laptopList > li:hover,
 .mobileList > li:hover {
   color: #b4184f;
-}
+} */
 
 .instagram:hover {
   background: #f09433;
@@ -92,7 +92,7 @@ input[type="file"]::file-selector-button:hover {
   background: #0d45a5;
 }
 
-/* for loading comp */
+/* for Loading component */
 
 .loader {
   position: absolute;
