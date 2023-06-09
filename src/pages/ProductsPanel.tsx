@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableContainer,
@@ -14,7 +14,8 @@ import {
 import { FcEditImage, FcEmptyTrash } from "react-icons/fc";
 import AddProductModal from "../components/AddProductModal";
 import axios from "axios";
-import { QueryFunction, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../components/Loading";
 
 interface Product {
   _id: string;
@@ -56,10 +57,10 @@ const ProductsPanel: React.FC = () => {
   const itemsPerPage = 3;
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const fetchProducts: QueryFunction<Product[]> = async () => {
+  const fetchProducts = async (page: number) => {
     const [productsResponse, subcategoriesResponse] = await Promise.all([
       axios.get<ProductsResponse>(
-        "http://localhost:8000/api/products?limit=all"
+        `http://localhost:8000/api/products?page=${page}&limit=3`
       ),
       axios.get<{ data: { subcategories: Subcategory[] } }>(
         "http://localhost:8000/api/subcategories?limit=all"
@@ -68,39 +69,51 @@ const ProductsPanel: React.FC = () => {
 
     const subcategoriesMap: Record<string, string> =
       subcategoriesResponse.data.data.subcategories.reduce(
-        (map: Record<string, string>, subcategory) => {
+        (map: Record<string, string>, subcategory: Subcategory) => {
           map[subcategory._id] = subcategory.name;
           return map;
         },
         {}
       );
 
-    const products = productsResponse.data.data.products.map((product) => ({
-      ...product,
-      subcategory: subcategoriesMap[product.subcategory] || product.subcategory,
-    }));
+    const products: Product[] = productsResponse.data.data.products.map(
+      (product: Product) => ({
+        ...product,
+        subcategory:
+          subcategoriesMap[product.subcategory] || product.subcategory,
+      })
+    );
 
-    return products;
+    const totalProducts: number = productsResponse.data.total;
+
+    return { products, totalProducts };
   };
 
   const {
-    data: products = [],
+    data: result = { products: [], totalProducts: 0 },
     isLoading,
     isError,
-  } = useQuery<Product[]>(["products", "subcategories"], fetchProducts);
+    refetch,
+  } = useQuery(["products", "subcategories", currentPage], () =>
+    fetchProducts(currentPage)
+  );
+
+  const { products = [], totalProducts = 0 } = result;
+
+  useEffect(() => {
+    if (!products) refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (isError) {
     return <div>Error fetching products</div>;
   }
 
-  const maxPages = Math.ceil(products.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentData = products.slice(indexOfFirstItem, indexOfLastItem);
+  const maxPages: number = Math.ceil(totalProducts / itemsPerPage);
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1);
@@ -153,7 +166,7 @@ const ProductsPanel: React.FC = () => {
             </Tr>
           </Thead>
           <Tbody style={{ color: "midnightblue" }}>
-            {currentData.map((item) => (
+            {products.map((item: Product) => (
               <Tr key={item._id}>
                 <Td>
                   <Image

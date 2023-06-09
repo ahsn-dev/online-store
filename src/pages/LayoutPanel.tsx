@@ -35,13 +35,13 @@ const LayoutPanel = () => {
       <GridItem pl="2" area={"nav"} className="h-full bg-[#3282B8]">
         <Flex className="h-full items-center justify-evenly">
           <Flex className="h-full flex-col items-center justify-evenly">
-            <Link to="panel/productsPanel">
+            <Link to="/panel/productsPanel">
               <Box className="flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors">
                 <FcMultipleDevices className="text-3xl" />
                 <span>کالاها</span>
               </Box>
             </Link>
-            <Link to="panel/InventoryPanel">
+            <Link to="/panel/InventoryPanel">
               <Box
                 className="flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors"
                 style={{ inlineSize: "max-content" }}
@@ -50,7 +50,7 @@ const LayoutPanel = () => {
                 <span>موجودی و قیمت‌ها</span>
               </Box>
             </Link>
-            <Link to="panel/ordersPanel">
+            <Link to="/panel/ordersPanel">
               <Box className="flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors">
                 <FcInspection className="text-3xl" />
                 <span>سفارش‌ها</span>

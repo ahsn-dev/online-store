@@ -73,9 +73,9 @@ const OrdersPanel = (): JSX.Element => {
     if (!orders) return [];
     switch (value) {
       case "waiting":
-        return orders.filter((order) => order.deliveryStatus === true);
-      case "done":
         return orders.filter((order) => order.deliveryStatus === false);
+      case "done":
+        return orders.filter((order) => order.deliveryStatus === true);
       default:
         return orders;
     }
