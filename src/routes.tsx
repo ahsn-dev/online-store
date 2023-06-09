@@ -53,15 +53,15 @@ const router = createBrowserRouter([
     element: <LayoutPanel />,
     children: [
       {
-        path: "panel/productsPanel",
+        path: "productsPanel",
         element: <ProductsPanel />,
       },
       {
-        path: "panel/InventoryPanel",
+        path: "InventoryPanel",
         element: <InventoryPanel />,
       },
       {
-        path: "panel/ordersPanel",
+        path: "ordersPanel",
         element: <OrdersPanel />,
       },
     ],
