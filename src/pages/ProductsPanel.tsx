@@ -10,41 +10,25 @@ import {
   HStack,
   Text,
   Image,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
 } from "@chakra-ui/react";
 import { FcEditImage, FcEmptyTrash } from "react-icons/fc";
 import AddProductModal from "../components/AddProductModal";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../components/Loading";
-
-interface Product {
-  _id: string;
-  subcategory: string;
-  name: string;
-  images: string[];
-  thumbnail: string;
-}
-
-interface ProductsResponse {
-  status: string;
-  page: number;
-  per_page: number;
-  total: number;
-  total_pages: number;
-  thumbnail: string;
-  data: {
-    products: Product[];
-  };
-}
-
-interface Subcategory {
-  _id: string;
-  category: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  slugname: string;
-}
+import {
+  Product,
+  ProductsResponse,
+  Subcategory,
+} from "../entities/ProductsPanel";
+import EditProductModal from "../components/EditProductModal";
 
 const truncateText = (text: string, limit: number): string => {
   if (text.length <= limit) {
@@ -57,6 +41,40 @@ const ProductsPanel: React.FC = () => {
   const itemsPerPage = 3;
   const [currentPage, setCurrentPage] = useState<number>(1);
 
+  // delete product //
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteProductId, setDeleteProductId] = useState("");
+  const handleDeleteProduct = async (productId: string) => {
+    setDeleteModalOpen(true);
+    setDeleteProductId(productId);
+  };
+
+  const confirmDeleteProduct = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:8000/api/products/${deleteProductId}`,
+        {
+          headers: {
+            "Content-Type": `multipart/form-data;
+                boundary=${deleteProductId}`,
+            Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NjQwMzg1MCwiZXhwIjoxNjg4OTk1ODUwfQ.V7g8eW4ayiJeXEv-1domsqEqP_1bpZySO8FvlLIScp0"}`,
+          },
+        }
+      );
+      refetch();
+      setDeleteModalOpen(false);
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
+
+  const cancelDeleteProduct = () => {
+    setDeleteModalOpen(false);
+    setDeleteProductId("");
+  };
+  // delete product //
+
+  // fetch product //
   const fetchProducts = async (page: number) => {
     const [productsResponse, subcategoriesResponse] = await Promise.all([
       axios.get<ProductsResponse>(
@@ -85,12 +103,14 @@ const ProductsPanel: React.FC = () => {
     );
 
     const totalProducts: number = productsResponse.data.total;
+    const totalPage: number = productsResponse.data.total_pages;
 
-    return { products, totalProducts };
+    return { products, totalProducts, totalPage };
   };
+  // fetch product //
 
   const {
-    data: result = { products: [], totalProducts: 0 },
+    data: result = { products: [], totalProducts: 0, totalPage: 0 },
     isLoading,
     isError,
     refetch,
@@ -98,7 +118,7 @@ const ProductsPanel: React.FC = () => {
     fetchProducts(currentPage)
   );
 
-  const { products = [], totalProducts = 0 } = result;
+  const { products = [], totalProducts = 0, totalPage = 0 } = result;
 
   useEffect(() => {
     if (!products) refetch();
@@ -178,9 +198,18 @@ const ProductsPanel: React.FC = () => {
                 <Td>{truncateText(item.name, 70)}</Td>
                 <Td style={{ textAlign: "center" }}>{item.subcategory}</Td>
                 <Td>
-                  <HStack spacing={2}>
-                    <FcEditImage size={36} />
-                    <FcEmptyTrash size={36} />
+                  <HStack spacing={2} className="flex justify-center">
+                    {/* <FcEditImage
+                      onClick={() => handleEditProduct(item._id)}
+                      size={36}
+                      className="cursor-pointer transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-110"
+                    /> */}
+                    <EditProductModal itemId={item._id} />
+                    <FcEmptyTrash
+                      onClick={() => handleDeleteProduct(item._id)}
+                      size={36}
+                      className="cursor-pointer transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-110"
+                    />
                   </HStack>
                 </Td>
               </Tr>
@@ -197,7 +226,7 @@ const ProductsPanel: React.FC = () => {
           </button>
           {
             <Text className="flex items-center text-2xl text-blue-400">
-              {currentPage}
+              {totalPage}/{currentPage}
             </Text>
           }
           <button
@@ -209,6 +238,23 @@ const ProductsPanel: React.FC = () => {
           </button>
         </div>
       </TableContainer>
+      <Modal isOpen={isDeleteModalOpen} onClose={cancelDeleteProduct}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>آیا از حذف این محصول، مطمئن هستید؟</ModalHeader>
+          <ModalBody>
+            <Text>عملیات غیر قابل بازگشت می‌باشد.</Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="red" mr={3} onClick={confirmDeleteProduct}>
+              بله
+            </Button>
+            <Button variant="ghost" onClick={cancelDeleteProduct}>
+              خیر
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
