@@ -14,34 +14,47 @@ import {
   Flex,
   Select,
 } from "@chakra-ui/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { FcEditImage } from "react-icons/fc";
 
-const createProduct = async (productData: any) => {
-  //   const cookie = new Cookies();
-  const response = await axios.post(
-    "http://localhost:8000/api/products",
-    productData,
-    {
-      headers: {
-        "Content-Type": `multipart/form-data;
-          boundary=${productData._boundary}`,
-        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NjQwMzg1MCwiZXhwIjoxNjg4OTk1ODUwfQ.V7g8eW4ayiJeXEv-1domsqEqP_1bpZySO8FvlLIScp0"}`,
-      },
-    }
-  );
-  return response.data;
-};
+interface Props {
+  itemId: string;
+}
 
-const AddProductModal = () => {
+const EditProductModal = ({ itemId }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
-  const mutation = useMutation(createProduct);
+  // const mutation = useMutation(createProduct);
   const [category, setCategory] = useState("");
+
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [EditProductId, setEditProductId] = useState("");
+
+  const [productData, setProductData] = useState<any>(null);
+
+  const fetchProductData = async (url: string) => {
+    const response = await axios.get(url);
+    return response.data;
+  };
+
+  const { data: product, isLoading: isLoadingProduct } = useQuery(
+    ["product", EditProductId],
+    () =>
+      fetchProductData(`http://localhost:8000/api/products/${EditProductId}`),
+    { enabled: isEditModalOpen }
+  );
+
+  useEffect(() => {
+    if (product) {
+      setProductData(product.data.product);
+      console.log(product.data.product.category.name);
+    }
+  }, [product]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -62,8 +75,6 @@ const AddProductModal = () => {
       ProductData.append("images", image[i]);
     }
     console.log(Object.fromEntries(ProductData));
-
-    mutation.mutate(ProductData);
   };
 
   const fetchData = async (url: string) => {
@@ -87,11 +98,34 @@ const AddProductModal = () => {
     return <div>Loading...</div>;
   }
 
+  const updateProduct = async (productData: any) => {
+    const response = await axios.patch(
+      `http://localhost:8000/api/products/${itemId}`,
+      productData,
+      {
+        headers: {
+          "Content-Type": `multipart/form-data;
+                boundary=${productData._boundary}`,
+          Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NjQwMzg1MCwiZXhwIjoxNjg4OTk1ODUwfQ.V7g8eW4ayiJeXEv-1domsqEqP_1bpZySO8FvlLIScp0"}`,
+        },
+      }
+    );
+    return response.data;
+  };
+
+  const handleEditProduct = (itemId: string) => {
+    setEditProductId(itemId);
+    setEditModalOpen(true);
+    onOpen();
+  };
+
   return (
     <>
-      <Button onClick={onOpen} style={{ backgroundColor: "#3382B7" }}>
-        افزودن کالا
-      </Button>
+      <FcEditImage
+        onClick={() => handleEditProduct(itemId)}
+        size={36}
+        className="cursor-pointer transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-110"
+      />
 
       <Modal
         initialFocusRef={initialRef}
@@ -122,6 +156,7 @@ const AddProductModal = () => {
                       ref={initialRef}
                       style={{ borderColor: "black" }}
                       name="name"
+                      defaultValue={productData?.name || ""}
                     />
                   </FormControl>
                   <FormControl flex="1">
@@ -130,13 +165,18 @@ const AddProductModal = () => {
                       style={{ borderColor: "black" }}
                       name="price"
                       type="number"
+                      defaultValue={productData?.price || ""}
                     />
                   </FormControl>
                 </Flex>
                 <Flex flexWrap="wrap" className="mb-4 gap-4">
                   <FormControl flex="1" mr={2}>
                     <FormLabel>برند</FormLabel>
-                    <Input style={{ borderColor: "black" }} name="brand" />
+                    <Input
+                      style={{ borderColor: "black" }}
+                      name="brand"
+                      defaultValue={productData?.brand || ""}
+                    />
                   </FormControl>
                   <FormControl flex="1">
                     <FormLabel>موجودی</FormLabel>
@@ -144,6 +184,7 @@ const AddProductModal = () => {
                       style={{ borderColor: "black" }}
                       name="quantity"
                       type="number"
+                      defaultValue={productData?.quantity || ""}
                     />
                   </FormControl>
                 </Flex>
@@ -153,6 +194,7 @@ const AddProductModal = () => {
                     <Input
                       style={{ borderColor: "black" }}
                       name="description"
+                      defaultValue={productData?.description || ""}
                     />
                   </FormControl>
                   <FormControl className="flex flex-wrap gap-x-4">
@@ -224,4 +266,4 @@ const AddProductModal = () => {
   );
 };
 
-export default AddProductModal;
+export default EditProductModal;
