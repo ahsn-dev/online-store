@@ -42,7 +42,8 @@ const EditProductModal = ({ itemId }: Props) => {
     return response.data;
   };
 
-  const { data: product, isLoading: isLoadingProduct } = useQuery(
+  // isLoading: isLoadingProduct
+  const { data: product } = useQuery(
     ["product", EditProductId],
     () =>
       fetchProductData(`http://localhost:8000/api/products/${EditProductId}`),
@@ -52,30 +53,11 @@ const EditProductModal = ({ itemId }: Props) => {
   useEffect(() => {
     if (product) {
       setProductData(product.data.product);
-      console.log(product.data.product.category.name);
+      //   queryClient.invalidateQueries(["product", itemId]);
+      //   queryClient.
+      //   console.log(product.data.product.category.name);
     }
-  }, [product]);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const image = (
-      event.currentTarget.elements as unknown as { image: { files: FileList } }
-    ).image.files;
-
-    const ProductData = new FormData();
-    const elements = event.currentTarget.querySelectorAll<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >('input:not([type="file"]), select, textarea');
-    elements.forEach((element) => {
-      ProductData.append(element.name, element.value);
-      element.value = ""; // Clear the value of each input element
-    });
-
-    for (let i = 0; i < image.length; i++) {
-      ProductData.append("images", image[i]);
-    }
-    console.log(Object.fromEntries(ProductData));
-  };
+  }, [product, productData]);
 
   const fetchData = async (url: string) => {
     const response = await axios.get(url);
@@ -101,15 +83,9 @@ const EditProductModal = ({ itemId }: Props) => {
   const updateProduct = async (productData: any) => {
     const response = await axios.patch(
       `http://localhost:8000/api/products/${itemId}`,
-      productData,
-      {
-        headers: {
-          "Content-Type": `multipart/form-data;
-                boundary=${productData._boundary}`,
-          Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NjQwMzg1MCwiZXhwIjoxNjg4OTk1ODUwfQ.V7g8eW4ayiJeXEv-1domsqEqP_1bpZySO8FvlLIScp0"}`,
-        },
-      }
+      productData
     );
+    // await queryClient.invalidateQueries(["product", itemId]);
     return response.data;
   };
 
@@ -146,7 +122,22 @@ const EditProductModal = ({ itemId }: Props) => {
             <Flex justifyContent={"center"} alignItems={"center"}>
               <Box
                 as="form"
-                onSubmit={handleSubmit}
+                onSubmit={(e: any) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  const image = (
+                    e.currentTarget.elements as unknown as {
+                      image: { files: FileList };
+                    }
+                  ).image.files;
+
+                  for (let i = 0; i < image.length; i++) {
+                    formData.append("images", image[i]);
+                  }
+
+                  updateProduct(formData);
+                  console.log(formData);
+                }}
                 className="flex flex-col p-8 text-slate-800"
               >
                 <Flex flexWrap="wrap" className="mb-4 gap-4">
@@ -202,7 +193,8 @@ const EditProductModal = ({ itemId }: Props) => {
                     <input
                       name="image"
                       type="file"
-                      multiple
+                      //   value={productData?.images[0]} // ask from mentors
+                      //   multiple
                       style={{
                         direction: "ltr",
                         border: "1px solid black",
@@ -224,30 +216,44 @@ const EditProductModal = ({ itemId }: Props) => {
                   >
                     <option value="">انتخاب دسته بندی</option>
                     {dataCategory?.categories.map((category: any) => (
-                      <option key={category._id} value={category._id}>
+                      <option
+                        key={category._id}
+                        value={category._id}
+                        selected={
+                          productData?.category?.name === category?.name
+                            ? true
+                            : false
+                        }
+                      >
                         {category.name}
                       </option>
                     ))}
                   </Select>
                 </FormControl>
-                {category && (
-                  <FormControl className="mt-4 pr-2">
-                    <FormLabel>زیر دسته</FormLabel>
-                    <Select
-                      style={{ borderColor: "black", padding: "0 2rem" }}
-                      name="subcategory"
-                    >
-                      <option value="">انتخاب زیر دسته</option>
-                      {dataSubCategory?.subcategories.map(
-                        (subcategory: any) => (
-                          <option key={subcategory._id} value={subcategory._id}>
-                            {subcategory.name}
-                          </option>
-                        )
-                      )}
-                    </Select>
-                  </FormControl>
-                )}
+
+                <FormControl className="mt-4 pr-2">
+                  <FormLabel>زیر دسته</FormLabel>
+                  <Select
+                    style={{ borderColor: "black", padding: "0 2rem" }}
+                    name="subcategory"
+                  >
+                    <option value="">انتخاب زیر دسته</option>
+                    {dataSubCategory?.subcategories.map((subcategory: any) => (
+                      <option
+                        key={subcategory._id}
+                        value={subcategory._id}
+                        // selected={
+                        //   productData?.subcategory?.name === subcategory?.name  // ask from mentors
+                        //     ? true
+                        //     : false
+                        // }
+                      >
+                        {subcategory.name}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+
                 <Button
                   type="submit"
                   mt={8}
@@ -255,7 +261,7 @@ const EditProductModal = ({ itemId }: Props) => {
                   className="mx-auto"
                   onClick={onClose}
                 >
-                  اضافه کردن محصول
+                  ویرایش محصول
                 </Button>
               </Box>
             </Flex>
