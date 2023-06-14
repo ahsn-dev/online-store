@@ -4,6 +4,8 @@ export interface Product {
   name: string;
   images: string[];
   thumbnail: string;
+  price: number;
+  quantity: number;
 }
 
 export interface ProductsResponse {
