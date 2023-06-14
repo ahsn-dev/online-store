@@ -7,14 +7,16 @@ import {
   TbShoppingCart,
 } from "react-icons/tb";
 import { useState } from "react";
+import { formatPrice } from "../utils/formatPrice";
 
 interface Props {
   image: string;
   name: string;
   price: string;
+  ProductId: string;
 }
 
-const ProductCard = ({ image, name, price }: Props) => {
+const ProductCard = ({ image, name, price, ProductId }: Props) => {
   const { colorMode } = useColorMode();
 
   const [like, setLike] = useState(false);
@@ -29,7 +31,7 @@ const ProductCard = ({ image, name, price }: Props) => {
       }  ml-1 shadow-xl sm:col-span-3 md:col-span-4 md:mx-6 md:my-4 lg:col-span-3 2xl:col-span-2`}
     >
       <Link
-        to="/productPage"
+        to={`/productPage/${ProductId}`}
         className="relative flex w-full md:flex-col md:items-center"
       >
         <div className="relative order-2 flex w-1/2 flex-col items-center justify-between rounded-bl-xl rounded-tl-xl bg-slate-400/30 px-1 py-2 md:order-none md:w-full md:rounded-bl-none md:rounded-tr-xl md:px-6">
@@ -45,7 +47,7 @@ const ProductCard = ({ image, name, price }: Props) => {
             colorMode === "dark" ? "bg-[#1E293B]" : "bg-[#FCFBFF]"
           }  px-1 py-2 md:w-full md:px-3 md:py-4`}
         >
-          <div className="flex flex-grow flex-col justify-center overflow-hidden md:justify-start">
+          <div className="flex flex-grow flex-col justify-center overflow-hidden md:justify-between">
             <h3
               className={`text-center text-sm font-semibold ${
                 colorMode === "dark" ? "text-[#8c9aaf]" : "text-[#6B7280]"
@@ -62,7 +64,7 @@ const ProductCard = ({ image, name, price }: Props) => {
                     } no-underline md:text-lg`}
                   >
                     <sup className="mr-1 rtl:block"></sup>
-                    <span>{price}</span>
+                    <span>{formatPrice(+price)}</span>
                     <sub className="ml-1 text-[10px]">تومان</sub>
                   </div>
                 </div>
