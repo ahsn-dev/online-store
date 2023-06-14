@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableContainer,
   Tbody,
-  Td,
   Th,
   Thead,
   Tr,
@@ -11,44 +10,94 @@ import {
   Text,
   Button,
 } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
-
-const fetchProducts = async () => {
-  const response = await fetch(
-    "http://localhost:8000/api/products?fields=price,name,quantity&limit=all"
-  );
-  const data = await response.json();
-  return data.data.products;
-};
-
-type Product = {
-  _id: string;
-  name: string;
-  price: number;
-  quantity: number;
-};
-
-const formatPrice = (price: number): string => {
-  const formattedPrice = price.toLocaleString();
-  return formattedPrice;
-};
-
-const truncateText = (text: string, limit: number): string => {
-  if (text.length <= limit) {
-    return text;
-  }
-  return text.slice(0, limit) + "...";
-};
+import axios from "axios";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { ProductsResponse, Product } from "../entities/ProductsPanel";
+import TrComponent from "../components/TrComponent";
+import { EditedData } from "../entities/EditedData";
+import { toast } from "react-toastify";
 
 const InventoryPanel = () => {
   const itemsPerPage = 6;
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [edit, setEdit] = useState<EditedData[]>([]);
+
+  useEffect(() => {
+    // console.log(edit);
+  }, [edit]);
+
+  const fetchProducts = async (page: number) => {
+    const [productsResponse] = await Promise.all([
+      axios.get<ProductsResponse>(
+        `http://localhost:8000/api/products?page=${page}&limit=6&fields=price,name,quantity`
+      ),
+    ]);
+
+    const products: Product[] = productsResponse.data.data.products.map(
+      (product: Product) => ({
+        ...product,
+      })
+    );
+
+    const totalProducts: number = productsResponse.data.total;
+    const totalPage: number = productsResponse.data.total_pages;
+
+    return { products, totalProducts, totalPage };
+  };
 
   const {
-    data: products,
+    data: result = { products: [], totalProducts: 0, totalPage: 0 },
     isLoading,
     isError,
-  } = useQuery(["products"], fetchProducts);
+    refetch,
+  } = useQuery(["products", currentPage], () => fetchProducts(currentPage));
+
+  const { products = [], totalProducts = 0, totalPage = 0 } = result;
+
+  useEffect(() => {
+    if (!products) refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products]);
+
+  const patchProduct = async (item: EditedData) => {
+    try {
+      await axios.patch(
+        `http://localhost:8000/api/products/${item.id}`,
+        {
+          price: item.price,
+          quantity: item.quantity,
+        },
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NjQ5Nzc1NywiZXhwIjoxNjg5MDg5NzU3fQ.EBYv0Kj6kD1oFbhmsULf4Q6B-eAX0dU-A5bAbj0VBT4",
+          },
+        }
+      );
+      return item;
+    } catch {
+      console.log("error");
+    }
+  };
+
+  const mutation = useMutation(patchProduct, {
+    onSuccess: () => {
+      refetch();
+      setEdit([]);
+    },
+  });
+
+  const handleSave = async () => {
+    await Promise.all(
+      edit.map(async (item) => {
+        await patchProduct(item);
+        return mutation.mutateAsync(item);
+      })
+    );
+    if (!mutation.error) {
+      toast.success("ویرایش با موفقیت انجام شد.");
+    }
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -58,10 +107,7 @@ const InventoryPanel = () => {
     return <div>Error fetching data</div>;
   }
 
-  const maxPages = Math.ceil(products.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentData = products.slice(indexOfFirstItem, indexOfLastItem);
+  const maxPages: number = Math.ceil(totalProducts / itemsPerPage);
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1);
@@ -77,7 +123,14 @@ const InventoryPanel = () => {
         <Text as="h2" className="text-2xl font-bold text-slate-700">
           مدیریت موجودی و قیمت‌ها
         </Text>
-        <Button style={{ backgroundColor: "#3382B7" }}>ذخیره</Button>
+        <Button
+          onClick={() => handleSave()}
+          style={{ backgroundColor: "#3382B7" }}
+          className="disabled:bg-slate-500"
+          disabled={!edit || mutation.isLoading}
+        >
+          {mutation.isLoading ? "در حال ذخیره‌سازی..." : "ذخیره"}
+        </Button>
       </HStack>
       <TableContainer className="rounded border border-gray-400 p-2">
         <Table variant="striped" colorScheme="twitter">
@@ -105,14 +158,13 @@ const InventoryPanel = () => {
             </Tr>
           </Thead>
           <Tbody style={{ color: "midnightblue" }}>
-            {currentData.map((item: Product) => (
-              <Tr key={item._id}>
-                <Td>{truncateText(item.name, 80)}</Td>
-                <Td style={{ textAlign: "center" }}>
-                  {formatPrice(item.price)}
-                </Td>
-                <Td style={{ textAlign: "center" }}>{item.quantity}</Td>
-              </Tr>
+            {products.map((item: Product) => (
+              <TrComponent
+                item={item}
+                key={item._id}
+                edit={edit}
+                setEdit={setEdit}
+              />
             ))}
           </Tbody>
         </Table>
@@ -124,11 +176,9 @@ const InventoryPanel = () => {
           >
             صفحه قبلی
           </button>
-          {
-            <Text className="flex items-center text-2xl text-blue-400">
-              {currentPage}
-            </Text>
-          }
+          <Text className="flex items-center text-2xl text-blue-400">
+            {totalPage}/{currentPage}
+          </Text>
           <button
             disabled={currentPage === maxPages}
             onClick={handleNextPage}
