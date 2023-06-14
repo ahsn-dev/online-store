@@ -21,9 +21,10 @@ import { FcEditImage } from "react-icons/fc";
 
 interface Props {
   itemId: string;
+  refetch: () => void;
 }
 
-const EditProductModal = ({ itemId }: Props) => {
+const EditProductModal = ({ itemId, refetch }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
@@ -80,13 +81,18 @@ const EditProductModal = ({ itemId }: Props) => {
     return <div>Loading...</div>;
   }
 
-  const updateProduct = async (productData: any) => {
-    const response = await axios.patch(
-      `http://localhost:8000/api/products/${itemId}`,
-      productData
-    );
-    // await queryClient.invalidateQueries(["product", itemId]);
-    return response.data;
+  const updateProduct = async (productData: FormData, refetch: () => void) => {
+    try {
+      const response = await axios.patch(
+        `http://localhost:8000/api/products/${itemId}`,
+        productData
+      );
+      // await queryClient.invalidateQueries(["product", itemId]);
+      refetch();
+      return response.data;
+    } catch {
+      console.log("error");
+    }
   };
 
   const handleEditProduct = (itemId: string) => {
@@ -114,28 +120,34 @@ const EditProductModal = ({ itemId }: Props) => {
         <ModalContent>
           <Flex className="flex-col items-end rounded-sm bg-slate-400">
             <ModalCloseButton className="mt-[6px] bg-slate-400 text-slate-800" />
-            <ModalHeader className="text-slate-800">
-              افزودن/ویرایش کالا
-            </ModalHeader>
+            <ModalHeader className="text-slate-800">ویرایش کالا</ModalHeader>
           </Flex>
           <ModalBody pb={6} className="rounded-sm bg-slate-400">
             <Flex justifyContent={"center"} alignItems={"center"}>
               <Box
                 as="form"
-                onSubmit={(e: any) => {
+                onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                   e.preventDefault();
-                  const formData = new FormData(e.currentTarget);
+                  const formData = new FormData();
                   const image = (
                     e.currentTarget.elements as unknown as {
                       image: { files: FileList };
                     }
                   ).image.files;
 
+                  const elements = e.currentTarget.querySelectorAll<
+                    HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+                  >('input:not([type="file"]), select, textarea');
+                  elements.forEach((element) => {
+                    formData.append(element.name, element.value);
+                    element.value = ""; // Clear the value of each input element
+                  });
+
                   for (let i = 0; i < image.length; i++) {
                     formData.append("images", image[i]);
                   }
 
-                  updateProduct(formData);
+                  updateProduct(formData, refetch);
                   console.log(formData);
                 }}
                 className="flex flex-col p-8 text-slate-800"

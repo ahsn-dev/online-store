@@ -160,7 +160,7 @@ const ProductsPanel: React.FC = () => {
                 <Td style={{ textAlign: "center" }}>{item.subcategory}</Td>
                 <Td>
                   <HStack spacing={2} className="flex justify-center">
-                    <EditProductModal itemId={item._id} />
+                    <EditProductModal itemId={item._id} refetch={refetch} />
                     <DeleteProductModal
                       itemId={item._id}
                       queryKey="products"
