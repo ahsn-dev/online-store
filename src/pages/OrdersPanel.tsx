@@ -51,8 +51,7 @@ const OrdersPanel = (): JSX.Element => {
   const fetchUsers = async (): Promise<User[]> => {
     const response = await axios.get("http://localhost:8000/api/users", {
       headers: {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NjE0MDg2MCwiZXhwIjoxNjg4NzMyODYwfQ.nTzTVahjTWnUswV9GeeaPn-zMNWFzwwU1-BD0Jm_Lfg",
+        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NjQ4OTk2NCwiZXhwIjoxNjg5MDgxOTY0fQ.wp3xTDKzyZfBOSD1OtpHVfKFvI8BKUQ5gcBzoyvlYSs"}`,
       },
     });
     return response.data.data.users;
