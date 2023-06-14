@@ -1,19 +1,18 @@
 import { Box, Button, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import {
-  // FcAlphabeticalSortingAz,
   FcExport,
   FcInspection,
   FcMoneyTransfer,
   FcMultipleDevices,
 } from "react-icons/fc";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, NavLink } from "react-router-dom";
 
 const LayoutPanel = () => {
   return (
     <Grid
       templateAreas={`"header header"
-                  "nav main"
-                  "nav main"`}
+                      "nav    main"
+                      "nav    main"`}
       gridTemplateRows={"100px 1fr 30px"}
       gridTemplateColumns={"350px 1fr"}
       h="100vh"
@@ -35,33 +34,48 @@ const LayoutPanel = () => {
       <GridItem pl="2" area={"nav"} className="h-full bg-[#3282B8]">
         <Flex className="h-full items-center justify-evenly">
           <Flex className="h-full flex-col items-center justify-evenly">
-            <Link to="/panel/productsPanel">
-              <Box className="flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors">
+            <NavLink
+              to="/panel/productsPanel"
+              className={({ isActive }) =>
+                isActive
+                  ? "flex items-center gap-x-2 rounded-full border  bg-[#92C5FD] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors"
+                  : "flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors"
+              }
+            >
+              <Box className="mx-auto flex items-center gap-x-2">
                 <FcMultipleDevices className="text-3xl" />
                 <span>کالاها</span>
               </Box>
-            </Link>
-            <Link to="/panel/InventoryPanel">
+            </NavLink>
+            <NavLink
+              to="/panel/InventoryPanel"
+              className={({ isActive }) =>
+                isActive
+                  ? "flex items-center gap-x-2 rounded-full border bg-[#92C5FD] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors"
+                  : "flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors"
+              }
+            >
               <Box
-                className="flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors"
+                className="mx-auto flex items-center gap-x-2"
                 style={{ inlineSize: "max-content" }}
               >
                 <FcMoneyTransfer className="text-3xl" />
                 <span>موجودی و قیمت‌ها</span>
               </Box>
-            </Link>
-            <Link to="/panel/ordersPanel">
-              <Box className="flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors">
+            </NavLink>
+            <NavLink
+              to="/panel/ordersPanel"
+              className={({ isActive }) =>
+                isActive
+                  ? "flex items-center gap-x-2 rounded-full border bg-[#92C5FD] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors"
+                  : "flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors"
+              }
+            >
+              <Box className="mx-auto flex items-center gap-x-2">
                 <FcInspection className="text-3xl" />
                 <span>سفارش‌ها</span>
               </Box>
-            </Link>
-            {/* <Link to="/categories">
-              <Box className="flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors">
-                <FcAlphabeticalSortingAz className="text-3xl" />
-                <span>دسته بندی‌ها</span>
-              </Box>
-            </Link> */}
+            </NavLink>
             <Link to="/loginPanel">
               <Box className="flex items-center gap-x-2 rounded-full border bg-[#0F4C75] px-16 py-2 text-white transition-colors hover:bg-sky-700 hover:transition-colors">
                 <FcExport className="text-3xl" />
