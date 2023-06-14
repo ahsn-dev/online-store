@@ -66,7 +66,7 @@ const LoginPanel = () => {
         p={6}
         borderWidth={1}
         borderRadius="md"
-        className="h-3/5 w-2/3"
+        className="h-fit w-2/3"
       >
         <div>
           <Text as={"h1"} fontSize="xl" fontWeight="bold" mb={4}>
