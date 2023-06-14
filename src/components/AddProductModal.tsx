@@ -14,12 +14,41 @@ import {
   Flex,
   Select,
 } from "@chakra-ui/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+  useMutation,
+  useQuery,
+} from "@tanstack/react-query";
 import axios from "axios";
 import React, { useState } from "react";
+import { Product } from "../entities/ProductsPanel";
+
+interface Props {
+  currentPage: number;
+  checkProductTotal: boolean;
+  fetchProducts: (page: number) => Promise<{
+    products: Product[];
+    totalProducts: number;
+    totalPage: number;
+  }>;
+  refetch: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<
+    QueryObserverResult<
+      {
+        products: Product[];
+        totalProducts: number;
+        totalPage: number;
+      },
+      unknown
+    >
+  >;
+  setCurrentPage: (page: number) => void;
+}
 
 const createProduct = async (productData: any) => {
-  //   const cookie = new Cookies();
   const response = await axios.post(
     "http://localhost:8000/api/products",
     productData,
@@ -27,20 +56,27 @@ const createProduct = async (productData: any) => {
       headers: {
         "Content-Type": `multipart/form-data;
           boundary=${productData._boundary}`,
-        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NjQwMzg1MCwiZXhwIjoxNjg4OTk1ODUwfQ.V7g8eW4ayiJeXEv-1domsqEqP_1bpZySO8FvlLIScp0"}`,
+        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NjQ5Njg3NywiZXhwIjoxNjg5MDg4ODc3fQ.p7IrkVVTSR0pZoq7wjeCR7Ju8R6aTVqmfo_FRBGtqz4"}`,
       },
     }
   );
   return response.data;
 };
 
-const AddProductModal = () => {
+const AddProductModal = ({
+  currentPage,
+  setCurrentPage,
+  checkProductTotal,
+  // fetchProducts,
+  refetch,
+}: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
   const mutation = useMutation(createProduct);
+
   const [category, setCategory] = useState("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -61,9 +97,17 @@ const AddProductModal = () => {
     for (let i = 0; i < image.length; i++) {
       ProductData.append("images", image[i]);
     }
-    console.log(Object.fromEntries(ProductData));
+    // console.log(Object.fromEntries(ProductData));
 
-    mutation.mutate(ProductData);
+    mutation.mutate(ProductData, {
+      onSuccess: () => {
+        if (checkProductTotal) {
+          refetch();
+        } else {
+          setCurrentPage(currentPage + 1);
+        }
+      },
+    });
   };
 
   const fetchData = async (url: string) => {
@@ -160,7 +204,7 @@ const AddProductModal = () => {
                     <input
                       name="image"
                       type="file"
-                      multiple
+                      // multiple
                       style={{
                         direction: "ltr",
                         border: "1px solid black",
