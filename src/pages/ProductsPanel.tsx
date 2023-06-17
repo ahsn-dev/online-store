@@ -105,8 +105,8 @@ const ProductsPanel: React.FC = () => {
           مدیریت کالاها
         </Text>
         <AddProductModal
-          fetchProducts={fetchProducts}
-          checkProductTotal={products.length < itemsPerPage}
+          // fetchProducts={fetchProducts}
+          checkProductTotalPage={products.length < itemsPerPage}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           refetch={refetch}
@@ -165,6 +165,12 @@ const ProductsPanel: React.FC = () => {
                       itemId={item._id}
                       queryKey="products"
                       queryClient={queryClient}
+                      checkProductTotalPage={products.length < itemsPerPage}
+                      // fetchProducts={fetchProducts}
+                      productsLength={products.length}
+                      currentPage={currentPage}
+                      setCurrentPage={setCurrentPage}
+                      refetch={refetch}
                     />
                   </HStack>
                 </Td>
