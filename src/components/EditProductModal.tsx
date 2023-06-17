@@ -18,6 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FcEditImage } from "react-icons/fc";
+import { Subcategory, Category } from "../entities/ProductsPanel";
 
 interface Props {
   itemId: string;
@@ -30,7 +31,6 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
-  // const mutation = useMutation(createProduct);
   const [category, setCategory] = useState("");
 
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -43,7 +43,6 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
     return response.data;
   };
 
-  // isLoading: isLoadingProduct
   const { data: product } = useQuery(
     ["product", EditProductId],
     () =>
@@ -51,19 +50,16 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
     { enabled: isEditModalOpen }
   );
 
-  useEffect(() => {
-    if (product) {
-      setProductData(product.data.product);
-      //   queryClient.invalidateQueries(["product", itemId]);
-      //   queryClient.
-      //   console.log(product.data.product.category.name);
-    }
-  }, [product, productData]);
-
   const fetchData = async (url: string) => {
     const response = await axios.get(url);
     return response.data.data;
   };
+
+  useEffect(() => {
+    if (product) {
+      setProductData(product.data.product);
+    }
+  }, [product, productData]);
 
   const { data: dataCategory, isLoading: isLoadingCategory } = useQuery(
     ["dataCategory"],
@@ -81,13 +77,33 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
     return <div>Loading...</div>;
   }
 
-  const updateProduct = async (productData: FormData, refetch: () => void) => {
+  const handleSubmitEditForm = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData();
+    const image = (
+      e.currentTarget.elements as unknown as {
+        image: { files: FileList };
+      }
+    ).image.files;
+
+    const elements = e.currentTarget.querySelectorAll<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >('input:not([type="file"]), select, textarea');
+
+    elements.forEach((element) => {
+      formData.append(element.name, element.value);
+      element.value = "";
+    });
+
+    for (let i = 0; i < image.length; i++) {
+      formData.append("images", image[i]);
+    }
+
     try {
       const response = await axios.patch(
         `http://localhost:8000/api/products/${itemId}`,
-        productData
+        formData
       );
-      // await queryClient.invalidateQueries(["product", itemId]);
       refetch();
       return response.data;
     } catch {
@@ -126,30 +142,7 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
             <Flex justifyContent={"center"} alignItems={"center"}>
               <Box
                 as="form"
-                onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-                  e.preventDefault();
-                  const formData = new FormData();
-                  const image = (
-                    e.currentTarget.elements as unknown as {
-                      image: { files: FileList };
-                    }
-                  ).image.files;
-
-                  const elements = e.currentTarget.querySelectorAll<
-                    HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-                  >('input:not([type="file"]), select, textarea');
-                  elements.forEach((element) => {
-                    formData.append(element.name, element.value);
-                    element.value = ""; // Clear the value of each input element
-                  });
-
-                  for (let i = 0; i < image.length; i++) {
-                    formData.append("images", image[i]);
-                  }
-
-                  updateProduct(formData, refetch);
-                  console.log(formData);
-                }}
+                onSubmit={handleSubmitEditForm}
                 className="flex flex-col p-8 text-slate-800"
               >
                 <Flex flexWrap="wrap" className="mb-4 gap-4">
@@ -205,7 +198,6 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
                     <input
                       name="image"
                       type="file"
-                      //   value={productData?.images[0]} // ask from mentors
                       //   multiple
                       style={{
                         direction: "ltr",
@@ -227,7 +219,7 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
                     onChange={(e) => setCategory(e.target.value)}
                   >
                     <option value="">انتخاب دسته بندی</option>
-                    {dataCategory?.categories.map((category: any) => (
+                    {dataCategory?.categories.map((category: Category) => (
                       <option
                         key={category._id}
                         value={category._id}
@@ -250,19 +242,21 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
                     name="subcategory"
                   >
                     <option value="">انتخاب زیر دسته</option>
-                    {dataSubCategory?.subcategories.map((subcategory: any) => (
-                      <option
-                        key={subcategory._id}
-                        value={subcategory._id}
-                        // selected={
-                        //   productData?.subcategory?.name === subcategory?.name  // ask from mentors
-                        //     ? true
-                        //     : false
-                        // }
-                      >
-                        {subcategory.name}
-                      </option>
-                    ))}
+                    {dataSubCategory?.subcategories.map(
+                      (subcategory: Subcategory) => (
+                        <option
+                          key={subcategory._id}
+                          value={subcategory._id}
+                          // selected={
+                          //   productData?.subcategory?.name === subcategory?.name  // ask from mentors
+                          //     ? true
+                          //     : false
+                          // }
+                        >
+                          {subcategory.name}
+                        </option>
+                      )
+                    )}
                   </Select>
                 </FormControl>
 
