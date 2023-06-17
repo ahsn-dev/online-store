@@ -20,6 +20,13 @@ export interface ProductsResponse {
   };
 }
 
+export interface Category {
+  _id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  slugname: string;
+}
 export interface Subcategory {
   _id: string;
   category: string;
