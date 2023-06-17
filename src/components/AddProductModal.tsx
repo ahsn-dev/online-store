@@ -22,17 +22,18 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import axios from "axios";
-import React, { useState } from "react";
-import { Product } from "../entities/ProductsPanel";
+import { useState } from "react";
+import { Product, Subcategory, Category } from "../entities/ProductsPanel";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 interface Props {
   currentPage: number;
-  checkProductTotal: boolean;
-  fetchProducts: (page: number) => Promise<{
-    products: Product[];
-    totalProducts: number;
-    totalPage: number;
-  }>;
+  checkProductTotalPage: boolean;
+  // fetchProducts: (page: number) => Promise<{
+  //   products: Product[];
+  //   totalProducts: number;
+  //   totalPage: number;
+  // }>;
   refetch: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<
@@ -48,6 +49,18 @@ interface Props {
   setCurrentPage: (page: number) => void;
 }
 
+interface IFormInput {
+  [key: string]: number | string | boolean | undefined;
+  name: string;
+  price: number;
+  brand: string;
+  quantity: number;
+  description: string;
+  image: string;
+  category: string;
+  subcategory: string;
+}
+
 const createProduct = async (productData: any) => {
   const response = await axios.post(
     "http://localhost:8000/api/products",
@@ -56,7 +69,8 @@ const createProduct = async (productData: any) => {
       headers: {
         "Content-Type": `multipart/form-data;
           boundary=${productData._boundary}`,
-        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NjQ5Njg3NywiZXhwIjoxNjg5MDg4ODc3fQ.p7IrkVVTSR0pZoq7wjeCR7Ju8R6aTVqmfo_FRBGtqz4"}`,
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NjQ5Njg3NywiZXhwIjoxNjg5MDg4ODc3fQ.p7IrkVVTSR0pZoq7wjeCR7Ju8R6aTVqmfo_FRBGtqz4",
       },
     }
   );
@@ -66,49 +80,20 @@ const createProduct = async (productData: any) => {
 const AddProductModal = ({
   currentPage,
   setCurrentPage,
-  checkProductTotal,
-  // fetchProducts,
+  checkProductTotalPage,
   refetch,
 }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const initialRef = React.useRef(null);
-  const finalRef = React.useRef(null);
+  const [category, setCategory] = useState("");
 
   const mutation = useMutation(createProduct);
 
-  const [category, setCategory] = useState("");
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const image = (
-      event.currentTarget.elements as unknown as { image: { files: FileList } }
-    ).image.files;
-
-    const ProductData = new FormData();
-    const elements = event.currentTarget.querySelectorAll<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >('input:not([type="file"]), select, textarea');
-    elements.forEach((element) => {
-      ProductData.append(element.name, element.value);
-      element.value = ""; // Clear the value of each input element
-    });
-
-    for (let i = 0; i < image.length; i++) {
-      ProductData.append("images", image[i]);
-    }
-    // console.log(Object.fromEntries(ProductData));
-
-    mutation.mutate(ProductData, {
-      onSuccess: () => {
-        if (checkProductTotal) {
-          refetch();
-        } else {
-          setCurrentPage(currentPage + 1);
-        }
-      },
-    });
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<IFormInput>();
 
   const fetchData = async (url: string) => {
     const response = await axios.get(url);
@@ -131,6 +116,32 @@ const AddProductModal = ({
     return <div>Loading...</div>;
   }
 
+  const submitAddForm: SubmitHandler<IFormInput> = (data) => {
+    const ProductData = new FormData();
+
+    for (let i = 0; i < data.image.length; i++) {
+      ProductData.append("images", data.image[i]);
+    }
+
+    for (const key in data) {
+      if (key !== "image") {
+        ProductData.append(key, data[key] as string);
+      }
+    }
+
+    mutation.mutate(ProductData, {
+      onSuccess: () => {
+        if (checkProductTotalPage) {
+          refetch();
+        } else {
+          setCurrentPage(currentPage + 1);
+        }
+        reset();
+        onClose();
+      },
+    });
+  };
+
   return (
     <>
       <Button onClick={onOpen} style={{ backgroundColor: "#3382B7" }}>
@@ -138,10 +149,11 @@ const AddProductModal = ({
       </Button>
 
       <Modal
-        initialFocusRef={initialRef}
-        finalFocusRef={finalRef}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={() => {
+          onClose();
+          reset();
+        }}
         size={"xl"}
       >
         <ModalOverlay />
@@ -154,39 +166,53 @@ const AddProductModal = ({
             <Flex justifyContent={"center"} alignItems={"center"}>
               <Box
                 as="form"
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit(submitAddForm)}
                 className="flex flex-col p-8 text-slate-800"
               >
                 <Flex flexWrap="wrap" className="mb-4 gap-4">
                   <FormControl flex="1" mr={2}>
                     <FormLabel>نام</FormLabel>
                     <Input
-                      ref={initialRef}
                       style={{ borderColor: "black" }}
-                      name="name"
+                      {...register("name", { required: true })}
                     />
+                    {errors.name && (
+                      <span className="text-red-700">نام الزامی است</span>
+                    )}
                   </FormControl>
                   <FormControl flex="1">
                     <FormLabel>قیمت</FormLabel>
                     <Input
                       style={{ borderColor: "black" }}
-                      name="price"
                       type="number"
+                      {...register("price", { required: true })}
                     />
+                    {errors.price && (
+                      <span className="text-red-700">قیمت الزامی است</span>
+                    )}
                   </FormControl>
                 </Flex>
                 <Flex flexWrap="wrap" className="mb-4 gap-4">
                   <FormControl flex="1" mr={2}>
                     <FormLabel>برند</FormLabel>
-                    <Input style={{ borderColor: "black" }} name="brand" />
+                    <Input
+                      style={{ borderColor: "black" }}
+                      {...register("brand", { required: true })}
+                    />
+                    {errors.brand && (
+                      <span className="text-red-700">برند الزامی است</span>
+                    )}
                   </FormControl>
                   <FormControl flex="1">
                     <FormLabel>موجودی</FormLabel>
                     <Input
                       style={{ borderColor: "black" }}
-                      name="quantity"
+                      {...register("quantity", { required: true })}
                       type="number"
                     />
+                    {errors.quantity && (
+                      <span className="text-red-700">موجودی الزامی است</span>
+                    )}
                   </FormControl>
                 </Flex>
                 <Flex className="mb-4 gap-4">
@@ -194,14 +220,18 @@ const AddProductModal = ({
                     <FormLabel>توضیحات</FormLabel>
                     <Input
                       style={{ borderColor: "black" }}
-                      name="description"
+                      {...register("description", { required: true })}
                     />
+                    {errors.description && (
+                      <span className="text-red-700">توضیحات الزامی است</span>
+                    )}
                   </FormControl>
                   <FormControl className="flex flex-wrap gap-x-4">
                     <FormLabel>انتخاب عکس محصول</FormLabel>
                     <input
-                      name="image"
+                      {...register("image", { required: true })}
                       type="file"
+                      accept="image/*"
                       // multiple
                       style={{
                         direction: "ltr",
@@ -213,39 +243,54 @@ const AddProductModal = ({
                         fontSize: "14px",
                       }}
                     />
+                    {errors.image && (
+                      <span className="text-red-700">
+                        انتخاب عکس الزامی است
+                      </span>
+                    )}
                   </FormControl>
                 </Flex>
                 <FormControl className="pr-2">
                   <FormLabel>دسته بندی</FormLabel>
                   <Select
-                    style={{ borderColor: "black", padding: "0 2rem" }}
-                    name="category"
+                    {...register("category", { required: true })}
                     onChange={(e) => setCategory(e.target.value)}
+                    style={{ borderColor: "black", padding: "0 2rem" }}
                   >
                     <option value="">انتخاب دسته بندی</option>
-                    {dataCategory?.categories.map((category: any) => (
+                    {dataCategory?.categories.map((category: Category) => (
                       <option key={category._id} value={category._id}>
                         {category.name}
                       </option>
                     ))}
                   </Select>
+                  {errors.category && (
+                    <span className="text-red-700">
+                      انتخاب دسته بندی الزامی است
+                    </span>
+                  )}
                 </FormControl>
                 {category && (
                   <FormControl className="mt-4 pr-2">
                     <FormLabel>زیر دسته</FormLabel>
                     <Select
+                      {...register("subcategory", { required: true })}
                       style={{ borderColor: "black", padding: "0 2rem" }}
-                      name="subcategory"
                     >
                       <option value="">انتخاب زیر دسته</option>
                       {dataSubCategory?.subcategories.map(
-                        (subcategory: any) => (
+                        (subcategory: Subcategory) => (
                           <option key={subcategory._id} value={subcategory._id}>
                             {subcategory.name}
                           </option>
                         )
                       )}
                     </Select>
+                    {errors.subcategory && (
+                      <span className="text-red-700">
+                        انتخاب زیر دسته الزامی است
+                      </span>
+                    )}
                   </FormControl>
                 )}
                 <Button
@@ -253,7 +298,6 @@ const AddProductModal = ({
                   mt={8}
                   style={{ backgroundColor: "#0F4C75" }}
                   className="mx-auto"
-                  onClick={onClose}
                 >
                   اضافه کردن محصول
                 </Button>
