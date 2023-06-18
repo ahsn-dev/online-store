@@ -26,6 +26,7 @@ export interface Category {
   createdAt: string;
   updatedAt: string;
   slugname: string;
+  icon: string;
 }
 export interface Subcategory {
   _id: string;
