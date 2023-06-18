@@ -3,6 +3,7 @@ import ProductCard from "./ProductCard";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "./Loading";
 import { Button } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 interface Product {
   _id: string;
@@ -48,14 +49,11 @@ const LatestProducts = () => {
           ))}
         </div>
       </div>
-      <div className="mt-24 flex">
-        <Button
-          className="mx-auto"
-          style={{ backgroundColor: "#A71B4A", color: "white" }}
-        >
+      <Link to="/products" className="mx-auto mt-24 flex w-min">
+        <Button style={{ backgroundColor: "#A71B4A", color: "white" }}>
           مشاهده محصولات بیشتر
         </Button>
-      </div>
+      </Link>
     </>
   );
 };
