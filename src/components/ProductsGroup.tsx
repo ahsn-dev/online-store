@@ -178,16 +178,20 @@ const ProductsGroup: React.FC = () => {
                 </Link>
                 <Flex gap="4rem">
                   {categoriesData?.map((category) => (
-                    <ul>
+                    <ul key={category._id}>
                       <li
                         className="flex flex-col gap-4"
                         style={{ alignItems: "flex-start" }}
                         key={category._id}
                       >
                         <Flex direction="column" gap="12px" width="100%">
-                          <span className="goodsSpan hover:text-[#b4184f]">
-                            {category.name}
-                          </span>
+                          <Link
+                            to={`http://localhost:5173/products?category=${category._id}`}
+                          >
+                            <span className="goodsSpan hover:text-[#b4184f]">
+                              {category.name}
+                            </span>
+                          </Link>
                         </Flex>
                         <ul className="flex flex-col gap-y-4">
                           {getCategorySubcategories(category._id)?.map(
