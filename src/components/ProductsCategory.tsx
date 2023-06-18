@@ -25,7 +25,7 @@ const ProductsCategory = () => {
             <p className="mt-2 text-sm font-bold">
               بروزترین محصولات با مناسب‌ترین قیمت
             </p>
-            <Link to="/">
+            <Link to="/products">
               <Button
                 fontSize={13}
                 className="mt-4 inline-block rounded-lg px-2 py-3 text-sm shadow-xl transition-transform duration-300 hover:scale-105"
