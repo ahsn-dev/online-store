@@ -155,6 +155,7 @@ import { BsPlus } from "react-icons/bs";
 import { BiMinus, BiTrash } from "react-icons/bi";
 import { FcShop } from "react-icons/fc";
 import useCartStore, { CartItem } from "../store";
+import { formatPrice } from "../utils/formatPrice";
 
 const Cart = () => {
   const { colorMode } = useColorMode();
@@ -243,8 +244,10 @@ const Cart = () => {
                           <div className="text-md flex flex-row-reverse items-center font-bold no-underline md:text-lg">
                             <sup className="mr-1 block"></sup>
                             {/* total price of selected product */}
-                            <span>{item.price}</span>
-                            <sub className="ml-1 text-[10px]">تومان</sub>
+                            <sub className="mr-2 text-[14px]">تومان</sub>
+                            <span className="mt-2">
+                              {formatPrice(item.price)}
+                            </span>
                           </div>
                         </div>
                       </div>
