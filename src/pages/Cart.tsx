@@ -172,12 +172,12 @@ const Cart = () => {
   };
 
   return (
-    <div className="mt-12">
-      <div className="mr-24 flex items-center gap-x-2">
-        <FcShop className="text-4xl" />
-        <h1 className="text-2xl font-bold">سبد خرید</h1>
+    <div className="mt-10">
+      <div className="mr-8 flex items-center gap-x-2">
+        <FcShop className="text-5xl" />
+        <h1 className="text-3xl font-bold">سبد خرید</h1>
       </div>
-      <div className="relative mx-auto mt-12 flex max-w-[2100px] flex-col items-start justify-center md:flex-row">
+      <div className="relative mx-auto mt-16 flex max-w-[2100px] flex-col items-start justify-center p-4 md:flex-row">
         <div>
           <div className="mx-auto w-full xl:max-w-[2100px]">
             {cartItems.map((item) => (
@@ -244,9 +244,9 @@ const Cart = () => {
                           <div className="text-md flex flex-row-reverse items-center font-bold no-underline md:text-lg">
                             <sup className="mr-1 block"></sup>
                             {/* total price of selected product */}
-                            <sub className="mr-2 text-[14px]">تومان</sub>
+                            <sub className="mr-2 text-sm">تومان</sub>
                             <span className="mt-2">
-                              {formatPrice(item.price)}
+                              {formatPrice(item.price * item.quantity)}
                             </span>
                           </div>
                         </div>
@@ -275,7 +275,7 @@ const Cart = () => {
           <div className="my-1 flex flex-col sm:my-2">
             <div className="flex items-center justify-between md:my-4">
               <p
-                className={`text-sm font-bold  sm:text-base ${
+                className={`text-sm font-bold sm:text-base ${
                   colorMode === "dark"
                     ? "text-white"
                     : "text-[#6b7280] md:text-[#424750]"
@@ -299,11 +299,11 @@ const Cart = () => {
               <div>
                 <div className="mt-2 flex justify-end self-end text-left">
                   <div>
-                    <div className="text-md flex flex-row-reverse items-center font-bold no-underline md:text-lg">
+                    <div className="text-md flex flex-row-reverse items-start font-bold no-underline md:text-lg">
                       <sup className="mr-1 rtl:block"></sup>
                       {/* total price for all products in my cart */}
+                      <sub className="mr-2 text-sm">تومان</sub>
                       <span className="font-bold">۳٬۴۴۷٬۰۰۰</span>
-                      <sub className="ml-1 text-[10px]">تومان</sub>
                     </div>
                   </div>
                 </div>
