@@ -8,20 +8,31 @@ import {
 } from "react-icons/tb";
 import { useState } from "react";
 import { formatPrice } from "../utils/formatPrice";
+import { Product } from "../entities/Product";
+import useCartStore, { CartItem } from "../store";
 
-interface Props {
-  image: string;
-  name: string;
-  price: string;
-  ProductId: string;
-}
+const ProductCard = ({ image, name, price, productId }: Product) => {
+  const addToCart = useCartStore((state) => state.addToCart);
 
-const ProductCard = ({ image, name, price, ProductId }: Props) => {
   const { colorMode } = useColorMode();
 
   const [like, setLike] = useState(false);
   const toggleLike = () => {
     setLike((prevState) => !prevState);
+  };
+
+  const handleAddToCart = () => {
+    if (!productId) {
+      return;
+    }
+    const item: CartItem = {
+      id: productId,
+      name,
+      image,
+      price,
+      quantity: 1,
+    };
+    addToCart(item);
   };
 
   return (
@@ -31,7 +42,7 @@ const ProductCard = ({ image, name, price, ProductId }: Props) => {
       }  ml-1 shadow-xl sm:col-span-3 md:col-span-4 md:mx-6 md:my-4 lg:col-span-3 2xl:col-span-2`}
     >
       <Link
-        to={`/productPage/${ProductId}`}
+        to={`/productPage/${productId}`}
         className="relative flex w-full md:flex-col md:items-center"
       >
         <div className="relative order-2 flex w-1/2 flex-col items-center justify-between rounded-bl-xl rounded-tl-xl bg-slate-400/30 px-1 py-2 md:order-none md:w-full md:rounded-bl-none md:rounded-tr-xl md:px-6">
@@ -76,7 +87,7 @@ const ProductCard = ({ image, name, price, ProductId }: Props) => {
       <div className="bg-palette-card/20 absolute bottom-2 left-0 mt-2 flex w-1/2 justify-around self-center rounded-lg p-2 shadow-lg backdrop-blur-[8px] backdrop-filter md:-left-1 md:-top-2 md:bottom-auto md:h-[130px] md:w-auto md:flex-col md:rounded-full ">
         <div
           onClick={toggleLike}
-          className="transition-colors hover:text-rose-600 sm:px-3 md:px-0"
+          className="cursor-pointer transition-colors hover:text-rose-600 sm:px-3 md:px-0"
         >
           {like ? (
             <TbHeartFilled className="text-xl text-rose-600" />
@@ -84,10 +95,13 @@ const ProductCard = ({ image, name, price, ProductId }: Props) => {
             <TbHeartPlus className="text-xl" />
           )}
         </div>
-        <div className="transition-colors hover:text-rose-600 sm:px-3 md:px-0">
+        <div className="cursor-pointer transition-colors hover:text-rose-600 sm:px-3 md:px-0">
           <TbShare className="text-xl" />
         </div>
-        <div className="transition-colors hover:text-rose-600 sm:px-3 md:px-0">
+        <div
+          onClick={handleAddToCart}
+          className="cursor-pointer transition-colors hover:text-rose-600 sm:px-3 md:px-0"
+        >
           <TbShoppingCart className="text-xl" />
         </div>
       </div>

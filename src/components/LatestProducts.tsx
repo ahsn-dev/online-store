@@ -4,14 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "./Loading";
 import { Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-
-interface Product {
-  _id: string;
-  images: string[];
-  name: string;
-  price: string;
-  ProductId: string;
-}
+import { Product } from "../entities/Product";
 
 const fetchProducts = async () => {
   const response = await axios.get(
@@ -41,10 +34,14 @@ const LatestProducts = () => {
           {data.map((product: Product) => (
             <ProductCard
               key={product._id}
-              image={`http://localhost:8000/images/${product.images[0]}`}
+              image={
+                product.images
+                  ? `http://localhost:8000/images/${product.images[0]}`
+                  : ""
+              }
               name={product.name}
               price={product.price}
-              ProductId={product._id}
+              productId={product._id}
             />
           ))}
         </div>
