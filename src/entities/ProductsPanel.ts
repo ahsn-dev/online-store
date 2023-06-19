@@ -1,12 +1,4 @@
-export interface Product {
-  _id: string;
-  subcategory: string;
-  name: string;
-  images: string[];
-  thumbnail: string;
-  price: number;
-  quantity: number;
-}
+import { Product } from "./Product";
 
 export interface ProductsResponse {
   status: string;
