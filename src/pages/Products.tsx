@@ -8,14 +8,7 @@ import * as MdIcons from "react-icons/md";
 import { Category } from "../entities/ProductsPanel";
 import ProductCard from "../components/ProductCard";
 import Sort from "../components/Sort";
-
-interface Product {
-  _id: string;
-  images: string[];
-  name: string;
-  price: string;
-  ProductId: string;
-}
+import { Product } from "../entities/Product";
 
 const Products = () => {
   const { colorMode } = useColorMode();
@@ -108,10 +101,14 @@ const Products = () => {
             {products?.map((product: Product) => (
               <ProductCard
                 key={product._id}
-                image={`http://localhost:8000/images/${product.images[0]}`}
+                image={
+                  product.images
+                    ? `http://localhost:8000/images/${product.images[0]}`
+                    : ""
+                }
                 name={product.name}
                 price={product.price}
-                ProductId={product._id}
+                productId={product._id}
               />
             ))}
           </div>
