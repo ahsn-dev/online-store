@@ -13,8 +13,11 @@ import logo from "../assets/logo.png";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { IoMdArrowForward } from "react-icons/io";
 import ProductsGroup from "./ProductsGroup";
+import useCartStore from "../store";
 
 const NavBar = () => {
+  const cartItems = useCartStore((state) => state.cartItems);
+
   const { colorMode } = useColorMode();
 
   return (
@@ -45,12 +48,18 @@ const NavBar = () => {
           </Link>
           <Link to="/cart">
             <Button
-              leftIcon={<AiOutlineShoppingCart />}
+              leftIcon={<AiOutlineShoppingCart className="text-2xl" />}
               colorScheme="cyan"
               variant="solid"
               color={colorMode === "dark" ? "#0f172a" : "#f3f4f5"}
             >
               سبد خرید
+              <span
+                style={{ right: "5px" }}
+                className="absolute -top-[5px] flex h-5 w-5 items-center justify-center rounded-full bg-red-500 pt-[0.1rem] text-[0.75rem] leading-3 text-white shadow-lg md:right-[1rem]"
+              >
+                {cartItems.length}
+              </span>
             </Button>
           </Link>
         </Flex>
