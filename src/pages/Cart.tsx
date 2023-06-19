@@ -216,7 +216,7 @@ const Cart = () => {
                         className="mx-1 inline-block w-[65px] border border-gray-400 py-2 pr-7"
                         min="0"
                         max="10"
-                        defaultValue={item.quantity}
+                        value={item.quantity}
                         // readOnly
                       />
                       <div className="p-2">
