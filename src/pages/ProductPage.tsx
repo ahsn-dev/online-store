@@ -12,16 +12,12 @@ import useCartStore, { CartItem } from "../store";
 
 const ProductPage = () => {
   const [like, setLike] = useState(false);
-  const [response, setResponse] = useState({});
+  const [response, setResponse] = useState<any>({});
   const [counter, setCounter] = useState(0);
 
   const cartItems = useCartStore((state) => state.cartItems);
   const addToCart = useCartStore((state) => state.addToCart);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
-
-  const handleRemoveFromCart = (itemId: string) => {
-    removeFromCart(itemId);
-  };
 
   const toggleLike = () => {
     setLike((prevState) => !prevState);
@@ -49,9 +45,14 @@ const ProductPage = () => {
       name: response.name,
       image: `http://localhost:8000/images/${response.images[0]}`,
       price: response.price,
-      // quantity: 1,
+      quantity: 1,
     };
     addToCart(item);
+  };
+
+  const handleRemoveFromCart = () => {
+    setCounter((prev) => prev - 1);
+    removeFromCart(response._id);
   };
 
   const {
@@ -131,36 +132,20 @@ const ProductPage = () => {
                     <span>{product.description}</span>
                   </div>
                   <div className="sticky top-10 mt-8 flex max-w-[350px] flex-grow flex-col items-center border-2 px-6 py-4 shadow-lg ltr:ml-auto rtl:mr-auto sm:p-4 md:top-36 xl:p-6 xl:rtl:ml-2">
-                    <div className="flex w-full flex-col ">
+                    <div className="flex w-full items-center justify-between ">
                       <p className="text-lg">قیمت محصول</p>
-                      <div className="mt-2 flex text-left ltr:self-start rtl:justify-end rtl:self-end">
+                      <div className="flex justify-end self-end text-left">
                         <div className="flex flex-row-reverse items-center text-xl font-bold no-underline md:text-3xl">
-                          <sup className="mr-1 rtl:block"></sup>
-                          <span>{formatPrice(+product.price)}</span>
-                          <sub className="ml-1 text-[10px]">تومان</sub>
+                          <sup className="mr-2 block"></sup>
+                          <sub className="mb-1.5 mr-1 text-[14px]">تومان</sub>
+                          <span className="text-xl">
+                            {formatPrice(+product.price)}
+                          </span>
                         </div>
                       </div>
                     </div>
-                    {/* <div className="mt-6 flex cursor-pointer items-center justify-between">
-                      <div className="p-2">
-                        <AiOutlinePlus className="text-2xl" />
-                      </div>
-                      <input
-                        type="number"
-                        min="0"
-                        max="10"
-                        className="mx-1 inline-block w-[70px] border-[1px] border-gray-400 py-2 ltr:pl-7 rtl:pr-8 sm:mx-4"
-                      />
-                      <div className="p-2">
-                        <AiOutlineMinus className="text-2xl" />
-                      </div>
-                    </div> */}
-                    <div
-                      className={`my-2 flex-grow sm:my-0 ${
-                        counter > 0 ? "flex" : "hidden"
-                      }`}
-                    >
-                      <div className="flex cursor-pointer items-center justify-start lg:justify-center">
+                    <div className={`${counter > 0 ? "block" : "hidden"}`}>
+                      <div className="mt-12 flex cursor-pointer items-center justify-start lg:justify-center">
                         <div className="p-2" onClick={handleAddToCart}>
                           <BsPlus className="text-xl" />
                         </div>
@@ -175,12 +160,12 @@ const ProductPage = () => {
                           {counter === 1 ? (
                             <BiTrash
                               className="text-xl text-[#A71B4A]"
-                              onClick={() => handleRemoveFromCart(product.id)}
+                              onClick={handleRemoveFromCart}
                             />
                           ) : (
                             <BiMinus
                               className="text-xl"
-                              onClick={() => handleRemoveFromCart(product.id)}
+                              onClick={handleRemoveFromCart}
                             />
                           )}
                         </div>
@@ -189,7 +174,7 @@ const ProductPage = () => {
                     <br />
                     <button
                       onClick={handleAddToCart}
-                      className={`text-palette-side flex cursor-pointer items-center gap-x-2 rounded-lg border-none bg-[#A71B4A]/90 px-3 py-4 text-[12px] text-white shadow-lg transition-colors duration-200 hover:bg-[#A71B4A]/100 sm:text-base lg:px-8 ${
+                      className={`text-palette-side mt-8 flex cursor-pointer items-center gap-x-2 rounded-lg border-none bg-[#A71B4A]/90 px-3 py-4 text-[12px] text-white shadow-lg transition-colors duration-200 hover:bg-[#A71B4A]/100 sm:text-base lg:px-8 ${
                         counter === 0 ? "block" : "hidden"
                       }`}
                     >
