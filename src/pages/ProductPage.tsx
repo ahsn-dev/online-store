@@ -1,51 +1,82 @@
 import { TbHeartFilled, TbHeartPlus, TbShare } from "react-icons/tb";
-import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { Image } from "@chakra-ui/react";
-import { BsCartPlus } from "react-icons/bs";
+import { BsCartPlus, BsPlus } from "react-icons/bs";
 import Info from "../components/Info";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { formatPrice } from "../utils/formatPrice";
+import { BiMinus, BiTrash } from "react-icons/bi";
+import useCartStore, { CartItem } from "../store";
 
 const ProductPage = () => {
   const [like, setLike] = useState(false);
-  const [value, setValue] = useState(1);
+  const [response, setResponse] = useState({});
+  const [counter, setCounter] = useState(0);
+
+  const cartItems = useCartStore((state) => state.cartItems);
+  const addToCart = useCartStore((state) => state.addToCart);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+
+  const handleRemoveFromCart = (itemId: string) => {
+    removeFromCart(itemId);
+  };
 
   const toggleLike = () => {
     setLike((prevState) => !prevState);
   };
 
-  const handleInputChange = (event: any) => {
-    setValue(event.target.value);
-  };
-
   const location = useLocation();
-  const productId = location.pathname.split("/")[2];
+  const productIdPath = location.pathname.split("/")[2];
 
   const fetchProduct = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/products/${productId}`
+        `http://localhost:8000/api/products/${productIdPath}`
       );
+      setResponse(response.data.data.product);
       return response.data.data.product;
     } catch (error) {
       console.log(error);
     }
   };
 
+  const handleAddToCart = () => {
+    setCounter((prev) => prev + 1);
+    const item: CartItem = {
+      id: response._id,
+      name: response.name,
+      image: `http://localhost:8000/images/${response.images[0]}`,
+      price: response.price,
+      // quantity: 1,
+    };
+    addToCart(item);
+  };
+
   const {
     data: product,
     isLoading,
     error,
-  } = useQuery(["product", productId], fetchProduct);
+  } = useQuery(["product", productIdPath], fetchProduct);
 
   const pageTopRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     pageTopRef?.current?.scrollIntoView();
   }, []);
+
+  const checkExist = () => {
+    cartItems.map((item) => {
+      if (item.id === response._id) {
+        setCounter(item.quantity);
+      }
+    });
+  };
+
+  useEffect(() => {
+    checkExist();
+  });
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -110,8 +141,8 @@ const ProductPage = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-6 flex cursor-pointer items-center justify-between">
-                      <div onClick={() => setValue(value + 1)} className="p-2">
+                    {/* <div className="mt-6 flex cursor-pointer items-center justify-between">
+                      <div className="p-2">
                         <AiOutlinePlus className="text-2xl" />
                       </div>
                       <input
@@ -119,21 +150,50 @@ const ProductPage = () => {
                         min="0"
                         max="10"
                         className="mx-1 inline-block w-[70px] border-[1px] border-gray-400 py-2 ltr:pl-7 rtl:pr-8 sm:mx-4"
-                        value={value}
-                        onChange={handleInputChange}
                       />
                       <div className="p-2">
-                        <AiOutlineMinus
-                          className="text-2xl"
-                          onClick={() =>
-                            setValue(value > 1 ? value - 1 : value)
-                          }
+                        <AiOutlineMinus className="text-2xl" />
+                      </div>
+                    </div> */}
+                    <div
+                      className={`my-2 flex-grow sm:my-0 ${
+                        counter > 0 ? "flex" : "hidden"
+                      }`}
+                    >
+                      <div className="flex cursor-pointer items-center justify-start lg:justify-center">
+                        <div className="p-2" onClick={handleAddToCart}>
+                          <BsPlus className="text-xl" />
+                        </div>
+                        <input
+                          type="number"
+                          className="mx-1 inline-block w-[65px] border border-gray-400 py-2 pr-7"
+                          min="0"
+                          max="10"
+                          value={counter}
                         />
+                        <div className="p-2">
+                          {counter === 1 ? (
+                            <BiTrash
+                              className="text-xl text-[#A71B4A]"
+                              onClick={() => handleRemoveFromCart(product.id)}
+                            />
+                          ) : (
+                            <BiMinus
+                              className="text-xl"
+                              onClick={() => handleRemoveFromCart(product.id)}
+                            />
+                          )}
+                        </div>
                       </div>
                     </div>
                     <br />
-                    <button className="text-palette-side flex cursor-pointer items-center gap-x-2 rounded-lg border-none bg-[#A71B4A]/90 px-3 py-4 text-[12px] text-white shadow-lg transition-colors duration-200 hover:bg-[#A71B4A]/100 sm:text-base lg:px-8">
-                      <BsCartPlus className="text-white" />
+                    <button
+                      onClick={handleAddToCart}
+                      className={`text-palette-side flex cursor-pointer items-center gap-x-2 rounded-lg border-none bg-[#A71B4A]/90 px-3 py-4 text-[12px] text-white shadow-lg transition-colors duration-200 hover:bg-[#A71B4A]/100 sm:text-base lg:px-8 ${
+                        counter === 0 ? "block" : "hidden"
+                      }`}
+                    >
+                      <BsCartPlus className="text-2xl text-white" />
                       اضافه به سبد خرید
                     </button>
                   </div>

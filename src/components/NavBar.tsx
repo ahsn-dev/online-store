@@ -56,7 +56,7 @@ const NavBar = () => {
               سبد خرید
               <span
                 style={{ right: "5px" }}
-                className="absolute -top-[5px] flex h-5 w-5 items-center justify-center rounded-full bg-red-500 pt-[0.1rem] text-[0.75rem] leading-3 text-white shadow-lg md:right-[1rem]"
+                className="absolute -top-[5px] flex h-5 w-5 items-center justify-center rounded-full bg-red-400 pt-[0.1rem] text-[0.75rem] leading-3 text-white shadow-lg md:right-[1rem]"
               >
                 {cartItems.length}
               </span>
