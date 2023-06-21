@@ -16,13 +16,14 @@ import axios from "axios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 // import Loading from "../components/Loading";
 import {
-  Product,
+  // Product,
   ProductsResponse,
   Subcategory,
 } from "../entities/ProductsPanel";
 import EditProductModal from "../components/EditProductModal";
 import DeleteProductModal from "../components/DeleteProductModal";
 import { truncateText } from "../utils/truncateText";
+import { Product } from "../entities/Product";
 
 const ProductsPanel: React.FC = () => {
   const itemsPerPage = 3;
@@ -105,11 +106,11 @@ const ProductsPanel: React.FC = () => {
           مدیریت کالاها
         </Text>
         <AddProductModal
-          // fetchProducts={fetchProducts}
           checkProductTotalPage={products.length < itemsPerPage}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           refetch={refetch}
+          totalPage={totalPage}
         />
       </HStack>
       <TableContainer className="rounded border border-gray-400 p-2">
@@ -165,8 +166,7 @@ const ProductsPanel: React.FC = () => {
                       itemId={item._id}
                       queryKey="products"
                       queryClient={queryClient}
-                      checkProductTotalPage={products.length < itemsPerPage}
-                      // fetchProducts={fetchProducts}
+                      checkProductTotalPage={products.length > itemsPerPage}
                       productsLength={products.length}
                       currentPage={currentPage}
                       setCurrentPage={setCurrentPage}
