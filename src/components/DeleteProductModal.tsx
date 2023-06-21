@@ -18,7 +18,7 @@ import {
   RefetchQueryFilters,
   useMutation,
 } from "@tanstack/react-query";
-import { Product } from "../entities/ProductsPanel";
+import { Product } from "../entities/Product";
 
 interface Props {
   itemId: string;
@@ -50,7 +50,6 @@ const DeleteProductModal = ({
   setCurrentPage,
   checkProductTotalPage,
   refetch,
-  productsLength,
 }: Props) => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteProductId, setDeleteProductId] = useState("");
@@ -71,9 +70,8 @@ const DeleteProductModal = ({
         if (checkProductTotalPage) {
           refetch();
         } else {
-          if (productsLength < 1 && currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-          }
+          console.log("test");
+          setCurrentPage(currentPage - 1);
         }
       },
       onError: (error: any) => {
