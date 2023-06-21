@@ -155,6 +155,7 @@ const ProductPage = () => {
                           min="0"
                           max="10"
                           value={counter}
+                          readOnly
                         />
                         <div className="p-2">
                           {counter === 1 ? (
