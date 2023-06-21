@@ -12,6 +12,7 @@ export interface CartItem {
 // Define the shape of the cart store
 export interface CartStore {
   cartItems: CartItem[];
+  totalPrice: number;
   addToCart: (item: CartItem) => void;
   removeFromCart: (itemId: string) => void;
 }
@@ -19,6 +20,7 @@ export interface CartStore {
 // Create the cart store
 const useCartStore = create<CartStore>((set) => ({
   cartItems: [],
+  totalPrice: 0,
   addToCart: (item) => {
     set((state) => {
       const existingItem = state.cartItems.find((i) => i.id === item.id);
@@ -27,10 +29,12 @@ const useCartStore = create<CartStore>((set) => ({
           cartItems: state.cartItems.map((i) =>
             i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
           ),
+          totalPrice: state.totalPrice + item.price,
         };
       } else {
         return {
           cartItems: [...state.cartItems, { ...item, quantity: 1 }],
+          totalPrice: state.totalPrice + item.price,
         };
       }
     });
@@ -46,6 +50,7 @@ const useCartStore = create<CartStore>((set) => ({
             cartItems: state.cartItems.filter(
               (i, index) => index !== itemIndex
             ),
+            totalPrice: state.totalPrice - item.price,
           };
         } else {
           // Decrease the quantity by one if there are multiple items
@@ -53,6 +58,7 @@ const useCartStore = create<CartStore>((set) => ({
             cartItems: state.cartItems.map((i, index) =>
               index === itemIndex ? { ...i, quantity: i.quantity - 1 } : i
             ),
+            totalPrice: state.totalPrice - item.price,
           };
         }
       }
