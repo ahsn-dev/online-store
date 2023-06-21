@@ -23,8 +23,9 @@ import {
 } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
-import { Product, Subcategory, Category } from "../entities/ProductsPanel";
+import { Subcategory, Category } from "../entities/ProductsPanel";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { Product } from "../entities/Product";
 
 interface Props {
   currentPage: number;
@@ -34,6 +35,7 @@ interface Props {
   //   totalProducts: number;
   //   totalPage: number;
   // }>;
+  totalPage: number;
   refetch: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<
@@ -82,6 +84,7 @@ const AddProductModal = ({
   setCurrentPage,
   checkProductTotalPage,
   refetch,
+  totalPage,
 }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [category, setCategory] = useState("");
@@ -134,7 +137,7 @@ const AddProductModal = ({
         if (checkProductTotalPage) {
           refetch();
         } else {
-          setCurrentPage(currentPage + 1);
+          setCurrentPage(currentPage + totalPage);
         }
         reset();
         onClose();
