@@ -1,5 +1,7 @@
-import { Box, Flex, HStack, useColorMode } from "@chakra-ui/react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Box, Flex, HStack, useColorMode } from "@chakra-ui/react";
 import {
   BsBook,
   BsHeartPulse,
@@ -10,28 +12,9 @@ import {
 import { RiFireLine } from "react-icons/ri";
 import { BiChevronLeft, BiHome } from "react-icons/bi";
 import { IoShirtOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
 import { MdOutlineToys } from "react-icons/md";
 import { CgGym } from "react-icons/cg";
-import { useQuery } from "@tanstack/react-query";
-
-type Category = {
-  _id: string;
-  name: string;
-  icon: string;
-  createdAt: string;
-  updatedAt: string;
-  slugname: string;
-};
-
-type Subcategory = {
-  _id: string;
-  category: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  slugname: string;
-};
+import { Category, Subcategory } from "../entities/ProductsPanel";
 
 interface MyError extends Error {
   message: string;
@@ -178,7 +161,7 @@ const ProductsGroup: React.FC = () => {
                 </Link>
                 <Flex gap="4rem">
                   {categoriesData?.map((category) => (
-                    <ul key={category._id}>
+                    <ul>
                       <li
                         className="flex flex-col gap-4"
                         style={{ alignItems: "flex-start" }}
@@ -200,7 +183,11 @@ const ProductsGroup: React.FC = () => {
                                 key={subcategory._id}
                                 className="flex flex-col items-start hover:text-[#b4184f]"
                               >
-                                {subcategory.name}
+                                <Link
+                                  to={`http://localhost:5173/products?category=${category._id}&subcategory=${subcategory._id}`}
+                                >
+                                  {subcategory.name}
+                                </Link>
                               </li>
                             )
                           )}
