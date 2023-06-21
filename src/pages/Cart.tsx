@@ -12,6 +12,7 @@ const Cart = () => {
   const cartItems = useCartStore((state) => state.cartItems);
   const addToCart = useCartStore((state) => state.addToCart);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const totalPrice = useCartStore((state) => state.totalPrice);
 
   const handleAddToCart = (item: CartItem) => {
     addToCart(item);
@@ -63,6 +64,7 @@ const Cart = () => {
                         min="0"
                         max="10"
                         value={item.quantity}
+                        readOnly
                       />
                       <div className="p-2">
                         {item.quantity === 1 ? (
@@ -143,7 +145,9 @@ const Cart = () => {
                     <div className="text-md flex flex-row-reverse items-start font-bold no-underline md:text-lg">
                       <sup className="mr-1 rtl:block"></sup>
                       <sub className="mr-2 text-sm">تومان</sub>
-                      <span className="font-bold">۳٬۴۴۷٬۰۰۰</span>
+                      <span className="font-bold">
+                        {formatPrice(totalPrice)}
+                      </span>
                     </div>
                   </div>
                 </div>
