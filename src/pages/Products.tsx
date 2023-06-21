@@ -15,17 +15,28 @@ const Products = () => {
   const [selectedRadioBtn, setSelectedRadioBtn] = useState<string>("all");
 
   const location = useLocation();
-  const categoryId = location.search.split("=")[1] || "";
+  const categoryIdPath =
+    location.search.split("category=")[1]?.split("&")[0] || "";
 
   const fetchProducts = async () => {
+    const params = new URLSearchParams(window.location.search);
+    const categoryId = params.get("category") || "";
+    const subcategoryId = params.get("subcategory") || "";
+
     if (categoryId !== "") {
-      const response = await axios.get(
-        `http://localhost:8000/api/products?category=${categoryId}&limit=all`
-      );
+      let url = `http://localhost:8000/api/products?category=${categoryId}`;
+
+      if (subcategoryId !== "") {
+        url += `&subcategory=${subcategoryId}`;
+      }
+
+      url += "&limit=all";
+
+      const response = await axios.get(url);
       return response.data.data.products;
     } else {
       const response = await axios.get(
-        `http://localhost:8000/api/products?limit=all`
+        "http://localhost:8000/api/products?limit=all"
       );
       return response.data.data.products;
     }
@@ -40,15 +51,9 @@ const Products = () => {
   const { data: categories } = useQuery(["categories"], fetchCategories);
 
   useEffect(() => {
-    refetchProducts(categoryId);
-  });
-
-  const refetchProducts = async (id: string) => {
-    await axios.get(
-      `http://localhost:8000/api/products?category=${id}&limit=all`
-    );
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     refetch();
-  };
+  });
 
   function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setSelectedRadioBtn(e.currentTarget.id);
@@ -66,18 +71,22 @@ const Products = () => {
           دسته‌بندی‌ها
         </h3>
         <div className="flex flex-wrap justify-center">
-          {categories?.map((category: Category, index: number) => {
+          {categories?.map((category: Category) => {
             const IconComponent = getIconComponent(category.icon);
+
+            const isActive = category._id === categoryIdPath;
             return (
               <Link
-                key={index}
+                key={category._id}
                 to={`http://localhost:5173/products?category=${category?._id}`}
               >
                 <div
                   className={`mx-1 my-1 flex w-[5rem] flex-grow cursor-pointer flex-col items-center rounded-lg px-2 py-2 shadow-lg sm:w-auto sm:px-3 md:mx-3 md:px-6 md:py-4 ${
                     colorMode === "dark" ? "bg-[#1E293B]" : "bg-white"
-                  }`}
-                  onClick={() => refetchProducts(category?._id)}
+                  } ${isActive && "bg-gray-600"}`}
+                  onClick={() => {
+                    refetch();
+                  }}
                 >
                   <div className="text-4xl">
                     <IconComponent />
