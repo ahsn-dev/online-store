@@ -68,7 +68,7 @@ const ProductsPanel: React.FC = () => {
 
   const {
     data: result = { products: [], totalProducts: 0, totalPage: 0 },
-    // isLoading,
+    isLoading,
     isError,
     refetch,
   } = useQuery(["products", "subcategories", currentPage], () =>
@@ -82,9 +82,9 @@ const ProductsPanel: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products]);
 
-  // if (isLoading) {
-  //   return <Loading />;
-  // }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   if (isError) {
     return <div>Error fetching products</div>;
@@ -106,7 +106,7 @@ const ProductsPanel: React.FC = () => {
           مدیریت کالاها
         </Text>
         <AddProductModal
-          checkProductTotalPage={products.length < itemsPerPage}
+          checkProductTotalPage={products.length >= itemsPerPage}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           refetch={refetch}
@@ -166,8 +166,8 @@ const ProductsPanel: React.FC = () => {
                       itemId={item._id}
                       queryKey="products"
                       queryClient={queryClient}
-                      checkProductTotalPage={products.length > itemsPerPage}
-                      productsLength={products.length}
+                      checkProductTotalPage={products.length <= 1}
+                      // productsLength={products.length}
                       currentPage={currentPage}
                       setCurrentPage={setCurrentPage}
                       refetch={refetch}
