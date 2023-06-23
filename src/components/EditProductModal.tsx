@@ -19,6 +19,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FcEditImage } from "react-icons/fc";
 import { Subcategory, Category } from "../entities/ProductsPanel";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 interface Props {
   itemId: string;
@@ -61,12 +63,18 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
     }
   }, [product, productData]);
 
+  useEffect(() => {
+    if (product) {
+      subRefetch();
+    }
+  }, []);
+
   const { data: dataCategory, isLoading: isLoadingCategory } = useQuery(
     ["dataCategory"],
     () => fetchData("http://localhost:8000/api/categories")
   );
 
-  const { data: dataSubCategory } = useQuery(
+  const { data: dataSubCategory, refetch: subRefetch } = useQuery(
     ["dataSubCategory", category],
     () =>
       fetchData(`http://localhost:8000/api/subcategories?category=${category}`),
@@ -130,10 +138,10 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
         finalFocusRef={finalRef}
         isOpen={isOpen}
         onClose={onClose}
-        size={"xl"}
+        size={"2xl"}
       >
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent marginTop={"4"}>
           <Flex className="flex-col items-end rounded-sm bg-slate-400">
             <ModalCloseButton className="mt-[6px] bg-slate-400 text-slate-800" />
             <ModalHeader className="text-slate-800">ویرایش کالا</ModalHeader>
@@ -185,14 +193,14 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
                   </FormControl>
                 </Flex>
                 <Flex className="mb-4 gap-4">
-                  <FormControl className="pr-2">
+                  {/* <FormControl className="pr-2">
                     <FormLabel>توضیحات</FormLabel>
                     <Input
                       style={{ borderColor: "black" }}
                       name="description"
                       defaultValue={productData?.description || ""}
                     />
-                  </FormControl>
+                  </FormControl> */}
                   <FormControl className="flex flex-wrap gap-x-4">
                     <FormLabel>انتخاب عکس محصول</FormLabel>
                     <input
@@ -211,6 +219,17 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
                     />
                   </FormControl>
                 </Flex>
+                <FormControl>
+                  <FormLabel>توضیحات</FormLabel>
+                  <CKEditor
+                    editor={ClassicEditor}
+                    data={productData?.description || ""}
+                    onChange={(event, editor) => {
+                      const data = editor.getData();
+                      setProductData({ ...productData, description: data });
+                    }}
+                  />
+                </FormControl>
                 <FormControl className="pr-2">
                   <FormLabel>دسته بندی</FormLabel>
                   <Select
@@ -248,7 +267,7 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
                           key={subcategory._id}
                           value={subcategory._id}
                           // selected={
-                          //   productData?.subcategory?.name === subcategory?.name  // ask from mentors
+                          //   productData?.subcategory?.name === subcategory?.name // ask from mentors
                           //     ? true
                           //     : false
                           // }
