@@ -26,6 +26,8 @@ import { useState } from "react";
 import { Subcategory, Category } from "../entities/ProductsPanel";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Product } from "../entities/Product";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 interface Props {
   currentPage: number;
@@ -52,7 +54,7 @@ interface Props {
 }
 
 interface IFormInput {
-  [key: string]: number | string | boolean | undefined;
+  [key: string]: number | string | boolean | File | undefined;
   name: string;
   price: number;
   brand: string;
@@ -90,6 +92,17 @@ const AddProductModal = ({
   const [category, setCategory] = useState("");
 
   const mutation = useMutation(createProduct);
+
+  const [formData, setFormData] = useState<IFormInput>({
+    name: "",
+    price: 0,
+    brand: "",
+    quantity: 0,
+    description: "",
+    image: "",
+    category: "",
+    subcategory: "",
+  });
 
   const {
     register,
@@ -132,12 +145,17 @@ const AddProductModal = ({
       }
     }
 
+    // Append the description field to the form data
+    ProductData.append("description", formData.description);
+
     mutation.mutate(ProductData, {
       onSuccess: () => {
         if (checkProductTotalPage) {
+          setCurrentPage(currentPage + 1);
           refetch();
         } else {
-          setCurrentPage(currentPage + totalPage);
+          setCurrentPage(totalPage);
+          refetch();
         }
         reset();
         onClose();
@@ -156,11 +174,12 @@ const AddProductModal = ({
         onClose={() => {
           onClose();
           reset();
+          setFormData({ ...formData, description: "" });
         }}
-        size={"xl"}
+        size={"2xl"}
       >
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent marginTop={"4"}>
           <Flex className="flex-col items-end rounded-sm bg-slate-400">
             <ModalCloseButton className="mt-[6px] bg-slate-400 text-slate-800" />
             <ModalHeader className="text-slate-800">افزودن کالا</ModalHeader>
@@ -219,7 +238,7 @@ const AddProductModal = ({
                   </FormControl>
                 </Flex>
                 <Flex className="mb-4 gap-4">
-                  <FormControl className="pr-2">
+                  {/* <FormControl className="pr-2">
                     <FormLabel>توضیحات</FormLabel>
                     <Input
                       style={{ borderColor: "black" }}
@@ -228,7 +247,7 @@ const AddProductModal = ({
                     {errors.description && (
                       <span className="text-red-700">توضیحات الزامی است</span>
                     )}
-                  </FormControl>
+                  </FormControl> */}
                   <FormControl className="flex flex-wrap gap-x-4">
                     <FormLabel>انتخاب عکس محصول</FormLabel>
                     <input
@@ -253,7 +272,18 @@ const AddProductModal = ({
                     )}
                   </FormControl>
                 </Flex>
-                <FormControl className="pr-2">
+                <FormControl>
+                  <FormLabel>توضیحات</FormLabel>
+                  <CKEditor
+                    editor={ClassicEditor}
+                    data={formData.description}
+                    onChange={(event, editor) => {
+                      const data = editor.getData();
+                      setFormData({ ...formData, description: data });
+                    }}
+                  />
+                </FormControl>
+                <FormControl className="mt-3 pr-2">
                   <FormLabel>دسته بندی</FormLabel>
                   <Select
                     {...register("category", { required: true })}
