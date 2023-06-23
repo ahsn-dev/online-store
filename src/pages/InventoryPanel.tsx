@@ -12,10 +12,11 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { ProductsResponse, Product } from "../entities/ProductsPanel";
+import { ProductsResponse } from "../entities/ProductsPanel";
 import TrComponent from "../components/TrComponent";
 import { EditedData } from "../entities/EditedData";
 import { toast } from "react-toastify";
+import { Product } from "../entities/Product";
 
 const InventoryPanel = () => {
   const itemsPerPage = 6;
