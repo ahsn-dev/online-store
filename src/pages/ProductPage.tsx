@@ -68,7 +68,7 @@ const ProductPage = () => {
   }, []);
 
   const checkExist = () => {
-    cartItems.map((item) => {
+    cartItems?.map((item) => {
       if (item.id === response._id) {
         setCounter(item.quantity);
       }
