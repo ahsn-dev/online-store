@@ -31,7 +31,7 @@ const Cart = () => {
       <div className="relative mx-auto mt-16 flex max-w-[2100px] flex-col items-start justify-center p-4 md:flex-row">
         <div>
           <div className="mx-auto w-full xl:max-w-[2100px]">
-            {cartItems.map((item) => (
+            {cartItems?.map((item: CartItem) => (
               <div
                 key={item.id}
                 className="flex flex-wrap items-center border-b-2 px-2 sm:my-4 sm:py-4"
@@ -127,7 +127,7 @@ const Cart = () => {
               >
                 تعداد کل کالا‌ها
               </p>
-              <p className="ml-1 font-bold">{cartItems.length}</p>
+              <p className="ml-1 font-bold">{cartItems?.length}</p>
             </div>
             <div className="flex flex-grow flex-wrap items-baseline justify-between md:my-4">
               <p
