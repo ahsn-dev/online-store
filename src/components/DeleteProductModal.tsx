@@ -39,7 +39,7 @@ interface Props {
     >
   >;
   setCurrentPage: (page: number) => void;
-  productsLength: number;
+  // productsLength: number;
 }
 
 const DeleteProductModal = ({
@@ -66,13 +66,14 @@ const DeleteProductModal = ({
     {
       onSuccess: async () => {
         await queryClient.invalidateQueries([queryKey]);
-
         if (checkProductTotalPage) {
-          refetch();
-        } else {
-          console.log("test");
           setCurrentPage(currentPage - 1);
+          refetch();
         }
+        // else {
+        //   setCurrentPage(currentPage);
+        //   refetch();
+        // }
       },
       onError: (error: any) => {
         console.error("Error deleting product:", error);
