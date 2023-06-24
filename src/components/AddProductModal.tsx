@@ -74,7 +74,7 @@ const createProduct = async (productData: any) => {
         "Content-Type": `multipart/form-data;
           boundary=${productData._boundary}`,
         Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NjQ5Njg3NywiZXhwIjoxNjg5MDg4ODc3fQ.p7IrkVVTSR0pZoq7wjeCR7Ju8R6aTVqmfo_FRBGtqz4",
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NzYyMTA2OCwiZXhwIjoxNjkwMjEzMDY4fQ.4Md-7MchA4UtX1DZ2ecTffeBHWmQ7sfpt5ukc4K_0QM",
       },
     }
   );
