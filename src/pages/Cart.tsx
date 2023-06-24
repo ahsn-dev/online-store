@@ -41,8 +41,8 @@ const Cart = () => {
 
   return (
     <div className="mt-10">
-      <div className="mr-8 flex items-center gap-x-2">
-        <FcShop className="text-5xl" />
+      <div className="mr-2 flex items-center gap-x-2">
+        <FcShop className="text-4xl" />
         <h1 className="text-3xl font-bold">سبد خرید</h1>
       </div>
       <div className="relative mx-auto mt-16 flex max-w-[2100px] flex-col items-start justify-center md:flex-row">
