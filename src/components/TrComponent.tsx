@@ -1,8 +1,8 @@
 import { Tr, Td } from "@chakra-ui/react";
 import { truncateText } from "../utils/truncateText";
-import { Product } from "../entities/ProductsPanel";
 import { useEffect, useState } from "react";
 import { EditedData } from "../entities/EditedData";
+import { Product } from "../entities/Product";
 
 interface Props {
   item: Product;
