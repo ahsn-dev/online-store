@@ -13,14 +13,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { FcViewDetails } from "react-icons/fc";
-
-type OrderFormData = {
-  name: string;
-  family: string;
-  address: string;
-  phoneNumber: string;
-  deliveryDate: string;
-};
+import { OrderFormData } from "../entities/OrderFormData";
 
 const schema = yup.object().shape({
   name: yup.string().required("نام الزامی است"),
@@ -42,23 +35,23 @@ const FinalizePurchase = () => {
 
   const onSubmit = async () => {
     setIsLoading(true);
-    // TODO: Implement payment logic here
+    window.location.href = "http://localhost:3003/payment";
     setIsLoading(false);
   };
 
   return (
-    <Box marginTop={16}>
+    <Box marginTop={8}>
       <Box
         as="h1"
         fontSize="2xl"
         fontWeight="bold"
-        mb={8}
+        mb={16}
         paddingRight={28}
         display={"flex"}
         alignItems={"center"}
         gap={2}
       >
-        <FcViewDetails className="text-3xl" />
+        <FcViewDetails className="text-4xl" />
         نهایی کردن خرید
       </Box>
 
