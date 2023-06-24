@@ -5,6 +5,8 @@ import { BiMinus, BiTrash } from "react-icons/bi";
 import { FcShop } from "react-icons/fc";
 import useCartStore, { CartItem } from "../store";
 import { formatPrice } from "../utils/formatPrice";
+import { toast } from "react-toastify";
+import router from "../routes";
 
 const Cart = () => {
   const { colorMode } = useColorMode();
@@ -20,6 +22,21 @@ const Cart = () => {
 
   const handleRemoveFromCart = (itemId: string) => {
     removeFromCart(itemId);
+  };
+
+  const handleFinalizePurchase = () => {
+    cartItems.length === 0
+      ? toast("🛒 سبد خرید شما خالی است", {
+          position: "top-left",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: `${colorMode === "dark" ? "dark" : "light"}`,
+        })
+      : router.navigate("/finalizePurchase");
   };
 
   return (
@@ -154,14 +171,13 @@ const Cart = () => {
               </div>
             </div>
           </div>
-          <Link to="/finalizePurchase">
-            <Button
-              style={{ backgroundColor: "#A71B4A", color: "white" }}
-              className="mx-auto mt-4 block w-full"
-            >
-              نهایی کردن سفارش
-            </Button>
-          </Link>
+          <Button
+            onClick={handleFinalizePurchase}
+            style={{ backgroundColor: "#A71B4A", color: "white" }}
+            className="mx-auto mt-4 block w-full"
+          >
+            نهایی کردن سفارش
+          </Button>
         </div>
       </div>
     </div>
