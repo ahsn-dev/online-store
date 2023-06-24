@@ -10,6 +10,7 @@ import { useState } from "react";
 import { formatPrice } from "../utils/formatPrice";
 import { Product } from "../entities/Product";
 import useCartStore, { CartItem } from "../store";
+import { toast } from "react-toastify";
 
 const ProductCard = ({ image, name, price, productId }: Product) => {
   const addToCart = useCartStore((state) => state.addToCart);
@@ -33,6 +34,16 @@ const ProductCard = ({ image, name, price, productId }: Product) => {
       quantity: 1,
     };
     addToCart(item);
+    toast("🛍️ محصول با موفقیت به سبد خرید اضافه شد", {
+      position: "top-left",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: `${colorMode === "dark" ? "dark" : "light"}`,
+    });
   };
 
   return (
