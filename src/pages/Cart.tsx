@@ -28,7 +28,7 @@ const Cart = () => {
         <FcShop className="text-5xl" />
         <h1 className="text-3xl font-bold">سبد خرید</h1>
       </div>
-      <div className="relative mx-auto mt-16 flex max-w-[2100px] flex-col items-start justify-center p-4 md:flex-row">
+      <div className="relative mx-auto mt-16 flex max-w-[2100px] flex-col items-start justify-center md:flex-row">
         <div>
           <div className="mx-auto w-full xl:max-w-[2100px]">
             {cartItems?.map((item: CartItem) => (
