@@ -11,6 +11,8 @@ import LoginPanel from "./pages/LoginPanel";
 import ProductsPanel from "./pages/ProductsPanel";
 import InventoryPanel from "./pages/InventoryPanel";
 import OrdersPanel from "./pages/OrdersPanel";
+import SuccessfulPayment from "./pages/SuccessfulPayment";
+import FailedPayment from "./pages/FailedPayment";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +43,14 @@ const router = createBrowserRouter([
       {
         path: "finalizePurchase",
         element: <FinalizePurchase />,
+      },
+      {
+        path: "successfulPayment",
+        element: <SuccessfulPayment />,
+      },
+      {
+        path: "failedPayment",
+        element: <FailedPayment />,
       },
     ],
   },
