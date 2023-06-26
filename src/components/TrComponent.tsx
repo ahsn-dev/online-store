@@ -12,9 +12,9 @@ interface Props {
 
 const TrComponent = ({ item, edit, setEdit }: Props) => {
   const [editedData, setEditedData] = useState<EditedData>({
-    id: item._id,
+    id: item._id || "",
     price: item.price,
-    quantity: item.quantity,
+    quantity: item.quantity || 0,
   });
 
   useEffect(() => {
@@ -22,7 +22,47 @@ const TrComponent = ({ item, edit, setEdit }: Props) => {
     if (checkValue) {
       setEditedData(checkValue);
     }
-  }, []);
+  }, [edit, item._id]);
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value.replace(/,/g, ""));
+    const newEditedData = { ...editedData, price: value };
+    setEditedData(newEditedData);
+    updateEditData(newEditedData);
+  };
+
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    const newEditedData = { ...editedData, quantity: value };
+    setEditedData(newEditedData);
+    updateEditData(newEditedData);
+  };
+
+  const updateEditData = (newData: EditedData) => {
+    const findEditedItem = edit.findIndex((item) => item.id === editedData.id);
+    const copyEdit = [...edit];
+    if (findEditedItem !== -1) {
+      copyEdit[findEditedItem] = newData;
+    } else {
+      copyEdit.push(newData);
+    }
+    setEdit(copyEdit);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Escape") {
+      // Reset the input value to the original value
+      setEditedData({
+        id: item._id || "",
+        price: item.price,
+        quantity: item.quantity || 0,
+      });
+    }
+  };
+
+  const formatPrice = (price: number) => {
+    return price.toLocaleString();
+  };
 
   return (
     <Tr>
@@ -34,24 +74,11 @@ const TrComponent = ({ item, edit, setEdit }: Props) => {
             textAlign: "center",
             color: "#191970",
           }}
-          type="number"
-          value={editedData.price}
+          type="text"
+          value={formatPrice(editedData.price)}
           name="price"
-          onChange={(e) => {
-            const value = parseFloat(e.target.value);
-            const newEditedData = { ...editedData, price: value };
-            setEditedData(newEditedData);
-            const findEditedItem = edit.findIndex(
-              (item) => item.id === editedData.id
-            );
-            const copyEdit = [...edit];
-            if (findEditedItem !== -1) {
-              copyEdit[findEditedItem].price = value;
-            } else {
-              copyEdit.push(newEditedData);
-            }
-            setEdit(copyEdit);
-          }}
+          onChange={handlePriceChange}
+          onKeyDown={handleKeyDown}
         />
       </Td>
       <Td style={{ textAlign: "center" }}>
@@ -64,21 +91,8 @@ const TrComponent = ({ item, edit, setEdit }: Props) => {
           type="number"
           name="quantity"
           value={editedData.quantity}
-          onChange={(e) => {
-            const value = parseFloat(e.target.value);
-            const newEditedData = { ...editedData, quantity: value };
-            setEditedData(newEditedData);
-            const findEditedItem = edit.findIndex(
-              (item) => item.id === editedData.id
-            );
-            const copyEdit = [...edit];
-            if (findEditedItem !== -1) {
-              copyEdit[findEditedItem].quantity = value;
-            } else {
-              copyEdit.push(newEditedData);
-            }
-            setEdit(copyEdit);
-          }}
+          onChange={handleQuantityChange}
+          onKeyDown={handleKeyDown}
         />
       </Td>
     </Tr>
