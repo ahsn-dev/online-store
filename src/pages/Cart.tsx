@@ -7,6 +7,8 @@ import useCartStore, { CartItem } from "../store";
 import { formatPrice } from "../utils/formatPrice";
 import { toast } from "react-toastify";
 import router from "../routes";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const Cart = () => {
   const { colorMode } = useColorMode();
@@ -16,8 +18,49 @@ const Cart = () => {
   const removeFromCart = useCartStore((state) => state.removeFromCart);
   const totalPrice = useCartStore((state) => state.totalPrice);
 
-  const handleAddToCart = (item: CartItem) => {
-    addToCart(item);
+  const [itemQuantities, setItemQuantities] = useState<number[]>([]);
+
+  const itemIds = cartItems.map((item: CartItem) => item.id);
+
+  const fetchProductQuantity = async (id: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/products/${id}`
+      );
+      const quantity = response.data.data.product.quantity;
+      return quantity;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchQuantities = async () => {
+      const quantities = await Promise.all(
+        itemIds.map((id) => fetchProductQuantity(id))
+      );
+      setItemQuantities(quantities);
+    };
+
+    fetchQuantities();
+  }, []);
+
+  const handleAddToCart = async (item: CartItem) => {
+    const quantity = await fetchProductQuantity(item.id);
+    if (quantity > item.quantity) {
+      addToCart(item);
+    } else {
+      toast(`از این محصول فقط ${item.quantity} عدد در انبار موجود است`, {
+        position: "top-left",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
   };
 
   const handleRemoveFromCart = (itemId: string) => {
@@ -77,7 +120,7 @@ const Cart = () => {
                       </div>
                       <input
                         type="number"
-                        className="mx-1 inline-block w-[65px] border border-gray-400 py-2 pr-7"
+                        className="mx-1 inline-block w-[65px] rounded border border-gray-400 py-2 pr-7"
                         min="0"
                         max="10"
                         value={item.quantity}
