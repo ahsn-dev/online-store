@@ -23,10 +23,6 @@ const InventoryPanel = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [edit, setEdit] = useState<EditedData[]>([]);
 
-  useEffect(() => {
-    // console.log(edit);
-  }, [edit]);
-
   const fetchProducts = async (page: number) => {
     const [productsResponse] = await Promise.all([
       axios.get<ProductsResponse>(
@@ -88,16 +84,25 @@ const InventoryPanel = () => {
     },
   });
 
-  const handleSave = async () => {
-    await Promise.all(
-      edit.map(async (item) => {
-        await patchProduct(item);
+  const handleSave = () => {
+    Promise.all(
+      edit.map((item) => {
         return mutation.mutateAsync(item);
       })
-    );
-    if (!mutation.error) {
-      toast.success("ویرایش با موفقیت انجام شد.");
-    }
+    ).then(() => {
+      if (edit.length > 0 && !mutation.error) {
+        toast.success("ویرایش با موفقیت انجام شد", {
+          position: "top-left",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    });
   };
 
   if (isLoading) {
@@ -128,7 +133,7 @@ const InventoryPanel = () => {
           onClick={() => handleSave()}
           style={{ backgroundColor: "#3382B7" }}
           className="disabled:bg-slate-500"
-          disabled={!edit || mutation.isLoading}
+          disabled={edit.length > 0 || mutation.isLoading ? true : false}
         >
           {mutation.isLoading ? "در حال ذخیره‌سازی..." : "ذخیره"}
         </Button>
