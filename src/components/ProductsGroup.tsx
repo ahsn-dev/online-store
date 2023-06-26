@@ -161,7 +161,7 @@ const ProductsGroup: React.FC = () => {
                 </Link>
                 <Flex gap="4rem">
                   {categoriesData?.map((category) => (
-                    <ul>
+                    <ul key={category._id}>
                       <li
                         className="flex flex-col gap-4"
                         style={{ alignItems: "flex-start" }}
