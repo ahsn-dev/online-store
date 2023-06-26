@@ -11,9 +11,21 @@ import { formatPrice } from "../utils/formatPrice";
 import { Product } from "../entities/Product";
 import useCartStore, { CartItem } from "../store";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { ResponseData } from "../entities/ResponseData";
 
 const ProductCard = ({ image, name, price, productId }: Product) => {
   const addToCart = useCartStore((state) => state.addToCart);
+  const [response, setResponse] = useState<ResponseData>({
+    _id: "",
+    name: "",
+    images: [],
+    price: 0,
+    quantity: 0,
+  });
+
+  const [counter, setCounter] = useState(0);
 
   const { colorMode } = useColorMode();
 
@@ -22,29 +34,65 @@ const ProductCard = ({ image, name, price, productId }: Product) => {
     setLike((prevState) => !prevState);
   };
 
-  const handleAddToCart = () => {
-    if (!productId) {
-      return;
+  const fetchProduct = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/products/${productId}`
+      );
+      setResponse(response.data.data.product);
+      return response.data.data.product;
+    } catch (error) {
+      console.log(error);
     }
-    const item: CartItem = {
-      id: productId,
-      name,
-      image,
-      price,
-      quantity: 1,
-    };
-    addToCart(item);
-    toast("🛍️ محصول با موفقیت به سبد خرید اضافه شد", {
-      position: "top-left",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: `${colorMode === "dark" ? "dark" : "light"}`,
-    });
   };
+
+  const handleAddToCart = () => {
+    if (counter < product.quantity) {
+      setCounter((prev) => prev + 1);
+      const item: CartItem = {
+        id: response._id,
+        name: response.name,
+        image: `http://localhost:8000/images/${response.images[0]}`,
+        price: response.price,
+        quantity: 1,
+      };
+      addToCart(item);
+      toast("🛍️ محصول با موفقیت به سبد خرید اضافه شد", {
+        position: "top-left",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: `${colorMode === "dark" ? "dark" : "light"}`,
+      });
+    } else if (counter >= product.quantity) {
+      toast(`از این محصول فقط ${product.quantity} عدد در انبار موجود است`, {
+        position: "top-left",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
+    } else {
+      toast(`در حال حاضر، این کالا موجود نیست`, {
+        position: "top-left",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+  };
+
+  const { data: product } = useQuery(["product", productId], fetchProduct);
 
   return (
     <div
