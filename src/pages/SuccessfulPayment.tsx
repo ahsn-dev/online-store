@@ -1,7 +1,15 @@
 import { Flex, Image, Text } from "@chakra-ui/react";
 import close from "../assets/check.png";
+import { useEffect } from "react";
+import useCartStore from "../store";
 
 const SuccessfulPayment = () => {
+  const clearCart = useCartStore((state) => state.clearCart);
+
+  useEffect(() => {
+    clearCart();
+  }, []);
+
   return (
     <Flex
       flexDirection={"column"}
