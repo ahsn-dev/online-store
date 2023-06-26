@@ -1,6 +1,6 @@
 export interface OrderFormData {
-  name: string;
-  family: string;
+  firstname: string;
+  lastname: string;
   address: string;
   phoneNumber: string;
   deliveryDate: string;
