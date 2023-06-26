@@ -9,10 +9,18 @@ import axios from "axios";
 import { formatPrice } from "../utils/formatPrice";
 import { BiMinus, BiTrash } from "react-icons/bi";
 import useCartStore, { CartItem } from "../store";
+import { toast } from "react-toastify";
+import { ResponseData } from "../entities/ResponseData";
 
 const ProductPage = () => {
   const [like, setLike] = useState(false);
-  const [response, setResponse] = useState<any>({});
+  const [response, setResponse] = useState<ResponseData>({
+    _id: "",
+    name: "",
+    images: [],
+    price: 0,
+    quantity: 0,
+  });
   const [counter, setCounter] = useState(0);
 
   const cartItems = useCartStore((state) => state.cartItems);
@@ -39,15 +47,28 @@ const ProductPage = () => {
   };
 
   const handleAddToCart = () => {
-    setCounter((prev) => prev + 1);
-    const item: CartItem = {
-      id: response._id,
-      name: response.name,
-      image: `http://localhost:8000/images/${response.images[0]}`,
-      price: response.price,
-      quantity: 1,
-    };
-    addToCart(item);
+    if (counter < product.quantity) {
+      setCounter((prev) => prev + 1);
+      const item: CartItem = {
+        id: response._id,
+        name: response.name,
+        image: `http://localhost:8000/images/${response.images[0]}`,
+        price: response.price,
+        quantity: 1,
+      };
+      addToCart(item);
+    } else {
+      toast(`از این محصول فقط ${product.quantity} عدد در انبار موجود است`, {
+        position: "top-left",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
   };
 
   const handleRemoveFromCart = () => {
@@ -131,7 +152,7 @@ const ProductPage = () => {
                     <h2 className="pb-2 text-lg font-bold">توضیحات:</h2>
                     <span>{product.description}</span>
                   </div>
-                  <div className="sticky top-10 mt-8 flex max-w-[350px] flex-grow flex-col items-center border-2 px-6 py-4 shadow-lg ltr:ml-auto rtl:mr-auto sm:p-4 md:top-36 xl:p-6 xl:rtl:ml-2">
+                  <div className="sticky top-10 mt-8 flex max-w-[350px] flex-grow flex-col items-center rounded-sm border-2 px-6 py-4 shadow-lg ltr:ml-auto rtl:mr-auto sm:p-4 md:top-36 xl:p-6 xl:rtl:ml-2">
                     <div className="flex w-full items-center justify-between ">
                       <p className="text-lg">قیمت محصول</p>
                       <div className="flex justify-end self-end text-left">
@@ -151,7 +172,7 @@ const ProductPage = () => {
                         </div>
                         <input
                           type="number"
-                          className="mx-1 inline-block w-[65px] border border-gray-400 py-2 pr-7"
+                          className="mx-1 inline-block w-[65px] rounded border border-gray-400 py-2 pr-7"
                           min="0"
                           max="10"
                           value={counter}
@@ -174,13 +195,24 @@ const ProductPage = () => {
                     </div>
                     <br />
                     <button
+                      disabled={product.quantity > 0 ? false : true}
                       onClick={handleAddToCart}
-                      className={`text-palette-side mt-8 flex cursor-pointer items-center gap-x-2 rounded-lg border-none bg-[#A71B4A]/90 px-3 py-4 text-[12px] text-white shadow-lg transition-colors duration-200 hover:bg-[#A71B4A]/100 sm:text-base lg:px-8 ${
+                      className={`text-palette-side mt-8 flex cursor-pointer items-center gap-x-2 rounded-lg border-none  px-3 py-4 text-[12px] text-white shadow-lg transition-colors duration-200 hover:bg-[#A71B4A]/100 sm:text-[15px] lg:px-8 ${
                         counter === 0 ? "block" : "hidden"
+                      } ${
+                        product.quantity > 0
+                          ? "bg-[#A71B4A]/90"
+                          : "cursor-not-allowed bg-gray-500 hover:bg-gray-500"
                       }`}
                     >
-                      <BsCartPlus className="text-2xl text-white" />
-                      اضافه به سبد خرید
+                      {product.quantity > 0 ? (
+                        <BsCartPlus className="text-2xl text-white" />
+                      ) : (
+                        ""
+                      )}
+                      {product.quantity === 0
+                        ? "در حال حاضر، این کالا موجود نیست"
+                        : "اضافه کردن به سبد خرید"}
                     </button>
                   </div>
                 </div>
