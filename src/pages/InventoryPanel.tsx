@@ -183,7 +183,7 @@ const InventoryPanel = () => {
             صفحه قبلی
           </button>
           <Text className="flex items-center text-2xl text-blue-400">
-            {totalPage}/{currentPage}
+            {currentPage} / {totalPage}
           </Text>
           <button
             disabled={currentPage === maxPages}
