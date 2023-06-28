@@ -1,6 +1,10 @@
 export interface Product {
   _id?: string;
   productId?: string;
+  product?: {
+    name: string;
+    price: number;
+  };
   name: string;
   image: string;
   images?: string[];
@@ -8,4 +12,5 @@ export interface Product {
   price: number;
   quantity?: number;
   subcategory?: string;
+  count?: number;
 }
