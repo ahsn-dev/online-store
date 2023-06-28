@@ -14,12 +14,7 @@ import {
 import AddProductModal from "../components/AddProductModal";
 import axios from "axios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-// import Loading from "../components/Loading";
-import {
-  // Product,
-  ProductsResponse,
-  Subcategory,
-} from "../entities/ProductsPanel";
+import { ProductsResponse, Subcategory } from "../entities/ProductsPanel";
 import EditProductModal from "../components/EditProductModal";
 import DeleteProductModal from "../components/DeleteProductModal";
 import { truncateText } from "../utils/truncateText";
@@ -29,7 +24,6 @@ const ProductsPanel: React.FC = () => {
   const itemsPerPage = 3;
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  // fetch product //
   const fetchProducts = async (page: number) => {
     const [productsResponse, subcategoriesResponse] = await Promise.all([
       axios.get<ProductsResponse>(
@@ -53,7 +47,8 @@ const ProductsPanel: React.FC = () => {
       (product: Product) => ({
         ...product,
         subcategory:
-          subcategoriesMap[product.subcategory] || product.subcategory,
+          subcategoriesMap[product.subcategory as string] ||
+          product.subcategory,
       })
     );
 
@@ -62,7 +57,6 @@ const ProductsPanel: React.FC = () => {
 
     return { products, totalProducts, totalPage };
   };
-  // fetch product //
 
   const queryClient = useQueryClient();
 
@@ -150,24 +144,29 @@ const ProductsPanel: React.FC = () => {
           <Tbody style={{ color: "midnightblue" }}>
             {products.map((item: Product) => (
               <Tr key={item._id}>
-                <Td>
-                  <Image
-                    src={`http://localhost:8000/images/${item.images[0]}`}
-                    className="h-24 w-24 object-contain"
-                    alt={item.name}
-                  />
-                </Td>
+                {item.images && item.images[0] && (
+                  <Td>
+                    <Image
+                      src={`http://localhost:8000/images/${item.images[0]}`}
+                      className="h-24 w-24 object-contain"
+                      alt={item.name}
+                    />
+                  </Td>
+                )}
+
                 <Td>{truncateText(item.name, 70)}</Td>
                 <Td style={{ textAlign: "center" }}>{item.subcategory}</Td>
                 <Td>
                   <HStack spacing={2} className="flex justify-center">
-                    <EditProductModal itemId={item._id} refetch={refetch} />
+                    <EditProductModal
+                      itemId={item._id ?? ""}
+                      refetch={refetch}
+                    />
                     <DeleteProductModal
-                      itemId={item._id}
+                      itemId={item._id ?? ""}
                       queryKey="products"
                       queryClient={queryClient}
                       checkProductTotalPage={products.length <= 1}
-                      // productsLength={products.length}
                       currentPage={currentPage}
                       setCurrentPage={setCurrentPage}
                       refetch={refetch}
@@ -188,7 +187,7 @@ const ProductsPanel: React.FC = () => {
           </button>
           {
             <Text className="flex items-center text-2xl text-blue-400">
-              {totalPage}/{currentPage}
+              {currentPage} / {totalPage}
             </Text>
           }
           <button
