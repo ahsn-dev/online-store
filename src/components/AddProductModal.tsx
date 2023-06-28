@@ -32,11 +32,6 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 interface Props {
   currentPage: number;
   checkProductTotalPage: boolean;
-  // fetchProducts: (page: number) => Promise<{
-  //   products: Product[];
-  //   totalProducts: number;
-  //   totalPage: number;
-  // }>;
   totalPage: number;
   refetch: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
@@ -238,16 +233,6 @@ const AddProductModal = ({
                   </FormControl>
                 </Flex>
                 <Flex className="mb-4 gap-4">
-                  {/* <FormControl className="pr-2">
-                    <FormLabel>توضیحات</FormLabel>
-                    <Input
-                      style={{ borderColor: "black" }}
-                      {...register("description", { required: true })}
-                    />
-                    {errors.description && (
-                      <span className="text-red-700">توضیحات الزامی است</span>
-                    )}
-                  </FormControl> */}
                   <FormControl className="flex flex-wrap gap-x-4">
                     <FormLabel>انتخاب عکس محصول</FormLabel>
                     <input
