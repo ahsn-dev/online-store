@@ -63,12 +63,6 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
     }
   }, [product, productData]);
 
-  useEffect(() => {
-    if (product) {
-      subRefetch();
-    }
-  }, []);
-
   const { data: dataCategory, isLoading: isLoadingCategory } = useQuery(
     ["dataCategory"],
     () => fetchData("http://localhost:8000/api/categories")
@@ -80,6 +74,12 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
       fetchData(`http://localhost:8000/api/subcategories?category=${category}`),
     { enabled: !!category }
   );
+
+  useEffect(() => {
+    if (product) {
+      subRefetch();
+    }
+  }, [product, subRefetch]);
 
   if (isLoadingCategory) {
     return <div>Loading...</div>;
@@ -193,14 +193,6 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
                   </FormControl>
                 </Flex>
                 <Flex className="mb-4 gap-4">
-                  {/* <FormControl className="pr-2">
-                    <FormLabel>توضیحات</FormLabel>
-                    <Input
-                      style={{ borderColor: "black" }}
-                      name="description"
-                      defaultValue={productData?.description || ""}
-                    />
-                  </FormControl> */}
                   <FormControl className="flex flex-wrap gap-x-4">
                     <FormLabel>انتخاب عکس محصول</FormLabel>
                     <input
@@ -230,11 +222,13 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
                     }}
                   />
                 </FormControl>
+
                 <FormControl className="pr-2">
                   <FormLabel>دسته بندی</FormLabel>
                   <Select
                     style={{ borderColor: "black", padding: "0 2rem" }}
                     name="category"
+                    defaultValue={productData?.category?.name || ""}
                     onChange={(e) => setCategory(e.target.value)}
                   >
                     <option value="">انتخاب دسته بندی</option>
@@ -259,6 +253,7 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
                   <Select
                     style={{ borderColor: "black", padding: "0 2rem" }}
                     name="subcategory"
+                    defaultValue={productData?.subcategory?.name || ""}
                   >
                     <option value="">انتخاب زیر دسته</option>
                     {dataSubCategory?.subcategories.map(
