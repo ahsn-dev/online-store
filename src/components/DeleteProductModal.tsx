@@ -39,7 +39,6 @@ interface Props {
     >
   >;
   setCurrentPage: (page: number) => void;
-  // productsLength: number;
 }
 
 const DeleteProductModal = ({
@@ -70,10 +69,6 @@ const DeleteProductModal = ({
           setCurrentPage(currentPage - 1);
           refetch();
         }
-        // else {
-        //   setCurrentPage(currentPage);
-        //   refetch();
-        // }
       },
       onError: (error: any) => {
         console.error("Error deleting product:", error);
