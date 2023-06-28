@@ -17,11 +17,14 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-interface Order {
+export interface Order {
   _id: string;
   user: string;
   products: {
-    product: string;
+    product: {
+      name: string;
+      price: number;
+    };
     count: number;
     _id: string;
   }[];
@@ -29,22 +32,25 @@ interface Order {
   deliveryDate: string;
   deliveryStatus: boolean;
   createdAt: string;
-  updatedAt: string;
 }
 
-interface User {
+export interface User {
   _id: string;
-  username: string;
+  firstname: string;
+  lastname: string;
+  phoneNumber: number;
+  address: string;
 }
 
 const OrdersPanel = (): JSX.Element => {
   const [value, setValue] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 4;
+  const itemsPerPage = 6;
 
   const fetchOrders = async (): Promise<Order[]> => {
     const response = await fetch("http://localhost:8000/api/orders");
     const data = await response.json();
+    console.log(data.data.orders, "orders");
     return data.data.orders;
   };
 
@@ -55,6 +61,7 @@ const OrdersPanel = (): JSX.Element => {
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NzYyMTA2OCwiZXhwIjoxNjkwMjEzMDY4fQ.4Md-7MchA4UtX1DZ2ecTffeBHWmQ7sfpt5ukc4K_0QM",
       },
     });
+    console.log(response.data.data.users, "users");
     return response.data.data.users;
   };
 
@@ -63,6 +70,7 @@ const OrdersPanel = (): JSX.Element => {
     isLoading: ordersLoading,
     isError: ordersError,
   } = useQuery<Order[]>(["orders"], fetchOrders);
+
   const {
     data: users,
     isLoading: usersLoading,
@@ -116,9 +124,16 @@ const OrdersPanel = (): JSX.Element => {
     return <div>Error fetching data</div>;
   }
 
-  const userIdToUsernameMap: { [key: string]: string } = {};
+  const userIdToUserMap: { [key: string]: User } = {};
+
   users.forEach((user) => {
-    userIdToUsernameMap[user._id] = user.username;
+    userIdToUserMap[user._id] = user;
+  });
+
+  const userIdToUsernameMap: { [key: string]: string } = {};
+
+  users.forEach((user) => {
+    userIdToUsernameMap[user._id] = `${user.firstname} ${user.lastname}`;
   });
 
   return (
@@ -186,7 +201,6 @@ const OrdersPanel = (): JSX.Element => {
                   fontSize: "18px",
                   color: "#475569",
                   textAlign: "center",
-                  // paddingRight: "46px",
                 }}
               >
                 جزئیات
@@ -206,7 +220,12 @@ const OrdersPanel = (): JSX.Element => {
                   {formatDate(order.createdAt)}
                 </Td>
                 <Td style={{ textAlign: "center" }}>
-                  <CheckOrderModal />
+                  {order.products.length > 0 && (
+                    <CheckOrderModal
+                      order={order}
+                      user={users.find((user) => user._id === order.user)}
+                    />
+                  )}
                 </Td>
               </Tr>
             ))}
@@ -221,7 +240,7 @@ const OrdersPanel = (): JSX.Element => {
             صفحه قبلی
           </button>
           <Text className="flex items-center text-2xl text-blue-400">
-            {currentPage}
+            {currentPage} / {maxPages}
           </Text>
           <button
             disabled={currentPage === maxPages}
