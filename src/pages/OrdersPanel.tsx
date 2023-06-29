@@ -16,6 +16,8 @@ import CheckOrderModal from "../components/CheckOrderModal";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { formatPriceFa } from "../utils/formatPrice";
+import { formatDate } from "../utils/formatDate";
 
 export interface Order {
   _id: string;
@@ -50,7 +52,6 @@ const OrdersPanel = (): JSX.Element => {
   const fetchOrders = async (): Promise<Order[]> => {
     const response = await fetch("http://localhost:8000/api/orders");
     const data = await response.json();
-    console.log(data.data.orders, "orders");
     return data.data.orders;
   };
 
@@ -61,7 +62,6 @@ const OrdersPanel = (): JSX.Element => {
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NzYyMTA2OCwiZXhwIjoxNjkwMjEzMDY4fQ.4Md-7MchA4UtX1DZ2ecTffeBHWmQ7sfpt5ukc4K_0QM",
       },
     });
-    console.log(response.data.data.users, "users");
     return response.data.data.users;
   };
 
@@ -69,6 +69,7 @@ const OrdersPanel = (): JSX.Element => {
     data: orders,
     isLoading: ordersLoading,
     isError: ordersError,
+    refetch,
   } = useQuery<Order[]>(["orders"], fetchOrders);
 
   const {
@@ -88,17 +89,6 @@ const OrdersPanel = (): JSX.Element => {
         return orders;
     }
   }, [orders, value]);
-
-  const formatPrice = (price: number): string => {
-    const formattedPrice = price.toLocaleString();
-    return formattedPrice;
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const formattedDate = date.toLocaleDateString("en-US");
-    return formattedDate;
-  };
 
   const maxPages: number = Math.ceil(filteredOrders.length / itemsPerPage);
   const indexOfLastItem: number = currentPage * itemsPerPage;
@@ -124,12 +114,6 @@ const OrdersPanel = (): JSX.Element => {
     return <div>Error fetching data</div>;
   }
 
-  const userIdToUserMap: { [key: string]: User } = {};
-
-  users.forEach((user) => {
-    userIdToUserMap[user._id] = user;
-  });
-
   const userIdToUsernameMap: { [key: string]: string } = {};
 
   users.forEach((user) => {
@@ -145,7 +129,12 @@ const OrdersPanel = (): JSX.Element => {
         <RadioGroup
           dir="ltr"
           defaultValue="all"
-          onChange={(value) => setValue(value)}
+          onChange={(value) => {
+            setValue(value);
+            setCurrentPage(
+              currentPage > 1 ? (prev) => prev - currentPage + 1 : currentPage
+            );
+          }}
         >
           <Stack
             direction="row"
@@ -214,7 +203,7 @@ const OrdersPanel = (): JSX.Element => {
                   {userIdToUsernameMap[order.user]}
                 </Td>
                 <Td style={{ textAlign: "center" }}>
-                  {formatPrice(order.totalPrice)}
+                  {formatPriceFa(order.totalPrice)}
                 </Td>
                 <Td style={{ textAlign: "center" }}>
                   {formatDate(order.createdAt)}
@@ -224,6 +213,9 @@ const OrdersPanel = (): JSX.Element => {
                     <CheckOrderModal
                       order={order}
                       user={users.find((user) => user._id === order.user)}
+                      ordersRefetch={refetch}
+                      usersCurrentPage={currentPage}
+                      setUsersCurrentPage={setCurrentPage}
                     />
                   )}
                 </Td>
