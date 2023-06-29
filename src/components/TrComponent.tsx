@@ -3,6 +3,7 @@ import { truncateText } from "../utils/truncateText";
 import { useEffect, useState } from "react";
 import { EditedData } from "../entities/EditedData";
 import { Product } from "../entities/Product";
+import { formatPrice } from "../utils/formatPrice";
 
 interface Props {
   item: Product;
@@ -58,10 +59,6 @@ const TrComponent = ({ item, edit, setEdit }: Props) => {
         quantity: item.quantity || 0,
       });
     }
-  };
-
-  const formatPrice = (price: number) => {
-    return price.toLocaleString();
   };
 
   return (
