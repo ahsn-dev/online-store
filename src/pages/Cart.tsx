@@ -4,7 +4,7 @@ import { BsPlus } from "react-icons/bs";
 import { BiMinus, BiTrash } from "react-icons/bi";
 import { FcShop } from "react-icons/fc";
 import useCartStore, { CartItem } from "../store";
-import { formatPrice } from "../utils/formatPrice";
+import { formatPriceFa } from "../utils/formatPrice";
 import { toast } from "react-toastify";
 import router from "../routes";
 import axios from "axios";
@@ -47,6 +47,9 @@ const Cart = () => {
 
   const handleAddToCart = async (item: CartItem) => {
     const quantity = await fetchProductQuantity(item.id);
+    console.log(quantity, "quantity");
+    console.log(item.quantity, "itemQuantity");
+
     if (quantity > item.quantity) {
       addToCart(item);
     } else {
@@ -150,7 +153,7 @@ const Cart = () => {
                             <sup className="mr-1 block"></sup>
                             <sub className="mr-2 text-sm">تومان</sub>
                             <span className="mt-2">
-                              {formatPrice(item.price * item.quantity)}
+                              {formatPriceFa(item.price * item.quantity)}
                             </span>
                           </div>
                         </div>
@@ -187,7 +190,9 @@ const Cart = () => {
               >
                 تعداد کل کالا‌ها
               </p>
-              <p className="ml-1 font-bold">{cartItems?.length}</p>
+              <p className="ml-1 font-bold">
+                {formatPriceFa(cartItems?.length)}
+              </p>
             </div>
             <div className="flex flex-grow flex-wrap items-baseline justify-between md:my-4">
               <p
@@ -206,7 +211,7 @@ const Cart = () => {
                       <sup className="mr-1 rtl:block"></sup>
                       <sub className="mr-2 text-sm">تومان</sub>
                       <span className="font-bold">
-                        {formatPrice(totalPrice)}
+                        {formatPriceFa(totalPrice)}
                       </span>
                     </div>
                   </div>
