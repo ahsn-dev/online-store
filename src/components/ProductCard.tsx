@@ -7,7 +7,7 @@ import {
   TbShoppingCart,
 } from "react-icons/tb";
 import { useState } from "react";
-import { formatPrice } from "../utils/formatPrice";
+import { formatPriceFa } from "../utils/formatPrice";
 import { Product } from "../entities/Product";
 import useCartStore, { CartItem } from "../store";
 import { toast } from "react-toastify";
@@ -17,6 +17,15 @@ import { ResponseData } from "../entities/ResponseData";
 
 const ProductCard = ({ image, name, price, productId }: Product) => {
   const addToCart = useCartStore((state) => state.addToCart);
+  const cartItems = useCartStore((state) => state.cartItems);
+
+  const cartItemQuantity = cartItems.find(
+    (item: CartItem) => item.id === productId
+  );
+
+  const initial = cartItemQuantity?.quantity || 0;
+  const [counter, setCounter] = useState(initial);
+
   const [response, setResponse] = useState<ResponseData>({
     _id: "",
     name: "",
@@ -24,8 +33,6 @@ const ProductCard = ({ image, name, price, productId }: Product) => {
     price: 0,
     quantity: 0,
   });
-
-  const [counter, setCounter] = useState(0);
 
   const { colorMode } = useColorMode();
 
@@ -54,7 +61,7 @@ const ProductCard = ({ image, name, price, productId }: Product) => {
         name: response.name,
         image: `http://localhost:8000/images/${response.images[0]}`,
         price: response.price,
-        quantity: 1,
+        quantity: counter,
       };
       addToCart(item);
       toast("🛍️ محصول با موفقیت به سبد خرید اضافه شد", {
@@ -67,28 +74,24 @@ const ProductCard = ({ image, name, price, productId }: Product) => {
         progress: undefined,
         theme: `${colorMode === "dark" ? "dark" : "light"}`,
       });
-    } else if (counter >= product.quantity) {
-      toast(`از این محصول فقط ${product.quantity} عدد در انبار موجود است`, {
-        position: "top-left",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: "dark",
-      });
     } else {
-      toast(`در حال حاضر، این کالا موجود نیست`, {
-        position: "top-left",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: "dark",
-      });
+      toast(
+        `${
+          product.quantity > 0
+            ? `از این محصول فقط ${product.quantity} عدد در انبار موجود است`
+            : "در حال حاضر، این کالا موجود نیست"
+        }`,
+        {
+          position: "top-left",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: `${colorMode === "dark" ? "dark" : "light"}`,
+        }
+      );
     }
   };
 
@@ -134,7 +137,7 @@ const ProductCard = ({ image, name, price, productId }: Product) => {
                     } no-underline md:text-lg`}
                   >
                     <sup className="mr-1 rtl:block"></sup>
-                    <span>{formatPrice(+price)}</span>
+                    <span>{formatPriceFa(+price)}</span>
                     <sub className="ml-1 text-[10px]">تومان</sub>
                   </div>
                 </div>
