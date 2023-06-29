@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { formatPrice } from "../utils/formatPrice";
+import { formatPriceFa } from "../utils/formatPrice";
 import { BiMinus, BiTrash } from "react-icons/bi";
 import useCartStore, { CartItem } from "../store";
 import { toast } from "react-toastify";
@@ -160,7 +160,7 @@ const ProductPage = () => {
                           <sup className="mr-2 block"></sup>
                           <sub className="mb-1.5 mr-1 text-[14px]">تومان</sub>
                           <span className="text-xl">
-                            {formatPrice(+product.price)}
+                            {formatPriceFa(+product.price)}
                           </span>
                         </div>
                       </div>
