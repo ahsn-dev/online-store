@@ -2,6 +2,7 @@ import { Flex, Image, Text } from "@chakra-ui/react";
 import close from "../assets/check.png";
 import { useEffect } from "react";
 import useCartStore from "../store";
+import axios from "axios";
 
 const SuccessfulPayment = () => {
   const clearCart = useCartStore((state) => state.clearCart);
@@ -9,6 +10,10 @@ const SuccessfulPayment = () => {
   useEffect(() => {
     clearCart();
   }, []);
+
+  const order = JSON.parse(localStorage.getItem("order") as string);
+
+  axios.post("http://localhost:8000/api/orders", order);
 
   return (
     <Flex
