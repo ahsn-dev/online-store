@@ -192,7 +192,7 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
                     />
                   </FormControl>
                 </Flex>
-                <Flex className="mb-4 gap-4">
+                <Flex className="gap-4">
                   <FormControl className="flex flex-wrap gap-x-4">
                     <FormLabel>انتخاب عکس محصول</FormLabel>
                     <input
@@ -211,6 +211,10 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
                     />
                   </FormControl>
                 </Flex>
+                <img
+                  className="mb-4 w-16"
+                  src={`http://localhost:8000/images/${productData?.images[0]}`}
+                />
                 <FormControl>
                   <FormLabel>توضیحات</FormLabel>
                   <CKEditor
