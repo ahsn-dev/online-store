@@ -52,7 +52,6 @@ const TrComponent = ({ item, edit, setEdit }: Props) => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Escape") {
-      // Reset the input value to the original value
       setEditedData({
         id: item._id || "",
         price: item.price,

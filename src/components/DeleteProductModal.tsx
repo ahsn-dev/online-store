@@ -23,7 +23,7 @@ import { Product } from "../entities/Product";
 interface Props {
   itemId: string;
   queryKey: string; // the query key used to fetch the product list
-  queryClient: QueryClient; // the query client instance
+  queryClient: QueryClient;
   currentPage: number;
   checkProductTotalPage: boolean;
   refetch: <TPageData>(

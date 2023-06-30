@@ -83,11 +83,8 @@ const CheckOrderModal = ({
   const totalItems = order.products.length;
   const totalPage = Math.ceil(totalItems / itemsPerPage);
 
-  // Calculate the indices of the items to be displayed on the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-
-  // Get the items for the current page
   const itemsForCurrentPage = order.products.slice(startIndex, endIndex);
 
   return (

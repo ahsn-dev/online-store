@@ -7,7 +7,6 @@ import bestSeller from "../assets/infoImages/bestSeller.png";
 const Info = () => {
   return (
     <Flex justifyContent={"space-around"}>
-      {/* marginTop={8} */}
       <Box
         display={"flex"}
         flexDirection={"column"}

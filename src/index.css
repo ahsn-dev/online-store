@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @font-face {
-  font-family: "vazir";
-  src: url(/public/fonts/Vazir-Regular-FD.woff);
-} */
-
 .fade {
   animation: fadein 0.4s;
 }
@@ -36,15 +31,6 @@
   padding-right: 8px;
   border-color: #b4184f;
 }
-
-/* .hoverTextColor:hover {
-  color: #b4184f;
-}
-
-.laptopList > li:hover,
-.mobileList > li:hover {
-  color: #b4184f;
-} */
 
 .instagram:hover {
   background: #f09433;
@@ -406,6 +392,7 @@ select:-webkit-autofill:focus {
   font-size: 14px;
 }
 
+/* styles for date picker */
 .custom-input {
   border-radius: 6px;
   border: 1px #363c4c solid;

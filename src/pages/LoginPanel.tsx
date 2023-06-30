@@ -27,7 +27,7 @@ interface LoginRequestData {
 
 const LoginPanel = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>(""); // add a state variable for error messages
+  const [error, setError] = useState<string>("");
   const { register, handleSubmit, formState } = useForm<LoginFormValues>({
     mode: "onChange",
   });
@@ -46,13 +46,13 @@ const LoginPanel = () => {
       navigate("/panel");
       return response.data;
     } catch (error) {
-      setError("نام کاربری یا رمز عبور اشتباه است"); // set the error message
+      setError("نام کاربری یا رمز عبور اشتباه است");
     }
   };
 
   const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
-    setError(""); // clear any existing error messages
+    setError("");
     getLogin(data);
     setIsLoading(false);
   };
@@ -101,7 +101,7 @@ const LoginPanel = () => {
                   {formState.errors.password?.message}
                 </FormErrorMessage>
               </FormControl>
-              {error && ( // render the error message if it exists
+              {error && (
                 <Box color="red.500" fontWeight="bold" textAlign="center">
                   {error}
                 </Box>

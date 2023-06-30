@@ -140,7 +140,6 @@ const AddProductModal = ({
       }
     }
 
-    // Append the description field to the form data
     ProductData.append("description", formData.description);
 
     mutation.mutate(ProductData, {
