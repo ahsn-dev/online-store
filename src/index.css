@@ -405,3 +405,17 @@ select:-webkit-autofill:focus {
   color: #b9b9b9;
   font-size: 14px;
 }
+
+.custom-input {
+  border-radius: 6px;
+  border: 1px #363c4c solid;
+  padding: 4px 12px;
+  background-color: transparent;
+  height: 40px;
+  width: 400px;
+}
+
+.custom-input:focus {
+  outline: none;
+  border: 2px solid #62b3ed;
+}
