@@ -19,15 +19,14 @@ import {
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { Order, User } from "../pages/OrdersPanel";
-import { Product } from "../entities/Product";
-import { formatPrice } from "../utils/formatPrice";
+import { useState } from "react";
+import { Order } from "../pages/OrdersPanel";
+import { formatDate } from "../utils/formatDate";
 import { truncateText } from "../utils/truncateText";
+import { formatNumberFa } from "../utils/formatNumberFa";
 
 interface Props {
   order: Order;
-  user?: User;
   ordersRefetch: () => void;
   usersCurrentPage: number;
   setUsersCurrentPage: React.Dispatch<React.SetStateAction<number>>;
@@ -35,7 +34,6 @@ interface Props {
 
 const CheckOrderModal = ({
   order,
-  user,
   ordersRefetch,
   usersCurrentPage,
   setUsersCurrentPage,
@@ -44,22 +42,6 @@ const CheckOrderModal = ({
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
-
-  const [products, setProducts] = useState<Product[]>([]);
-
-  const fetchOrder = async (id: string): Promise<Product[]> => {
-    const response = await fetch(`http://localhost:8000/api/orders/${id}`);
-    const data = await response.json();
-
-    // Transform the data to extract the required properties
-    const products = data.data.order.products.map((product: Product) => ({
-      name: product.product?.name,
-      price: product.product?.price,
-      count: product.count,
-    }));
-
-    return products;
-  };
 
   const handleDeliveryStatus = async () => {
     try {
@@ -98,27 +80,15 @@ const CheckOrderModal = ({
     setCurrentPage((prev) => prev - 1);
   };
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const fetchedProducts = await fetchOrder(order._id);
-      setProducts(fetchedProducts);
-    };
+  const totalItems = order.products.length;
+  const totalPage = Math.ceil(totalItems / itemsPerPage);
 
-    fetchProducts();
-  }, [order._id]);
-
-  const createdAtDate = order.createdAt.slice(0, 10);
-  const deliveryDate = order.deliveryDate.slice(0, 10);
-
-  // Calculate the start and end indexes for the current page
+  // Calculate the indices of the items to be displayed on the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  // Slice the products array based on the current page
-  const currentPageProducts = products.slice(startIndex, endIndex);
-
-  const totalItems = products.length;
-  const totalPage = Math.ceil(totalItems / itemsPerPage);
+  // Get the items for the current page
+  const itemsForCurrentPage = order.products.slice(startIndex, endIndex);
 
   return (
     <>
@@ -167,10 +137,11 @@ const CheckOrderModal = ({
                   fontWeight: "600",
                 }}
               >
-                <Text>{`${user?.firstname} ${user?.lastname}`}</Text>
-                <Text>{user?.address}</Text>
-                <Text>{user?.phoneNumber}</Text>
-                <Text>{createdAtDate}</Text> <Text>{deliveryDate}</Text>
+                <Text>{`${order.user.firstname} ${order.user.lastname}`}</Text>
+                <Text>{order.user.address}</Text>
+                <Text>{formatNumberFa(order.user.phoneNumber)}</Text>
+                <Text>{formatDate(order.createdAt)}</Text>
+                <Text>{formatDate(order.deliveryDate)}</Text>
               </HStack>
             </Flex>
 
@@ -200,13 +171,17 @@ const CheckOrderModal = ({
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {currentPageProducts.map((product, index) => (
-                    <Tr key={index}>
-                      <Td>{truncateText(product.name, 39)}</Td>
-                      <Td>{formatPrice(product.price)}</Td>
-                      <Td style={{ textAlign: "center" }}>{product.count}</Td>
-                    </Tr>
-                  ))}
+                  {itemsForCurrentPage.map((product, index) => {
+                    return (
+                      <Tr key={index}>
+                        <Td>{truncateText(product.product.name, 39)}</Td>
+                        <Td>{product.product.price}</Td>
+                        <Td style={{ textAlign: "center" }}>
+                          {product.product.quantity}
+                        </Td>
+                      </Tr>
+                    );
+                  })}
                 </Tbody>
               </Table>
               <div className="flex justify-center pt-4">
@@ -242,7 +217,7 @@ const CheckOrderModal = ({
               </Button>
             ) : (
               <Text className="mx-auto text-lg">
-                زمان تحویل: {deliveryDate}
+                زمان تحویل: {formatDate(order.deliveryDate)}
               </Text>
             )}
           </ModalFooter>
