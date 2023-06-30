@@ -15,33 +15,27 @@ import {
 import CheckOrderModal from "../components/CheckOrderModal";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { formatPriceFa } from "../utils/formatPrice";
 import { formatDate } from "../utils/formatDate";
+import { Product } from "../entities/Product";
 
 export interface Order {
   _id: string;
-  user: string;
-  products: {
-    product: {
-      name: string;
-      price: number;
-    };
-    count: number;
+  user: {
     _id: string;
+    firstname: string;
+    lastname: string;
+    phoneNumber: string;
+    address: string;
+  };
+  products: {
+    product: Product;
+    count: number;
   }[];
   totalPrice: number;
   deliveryDate: string;
   deliveryStatus: boolean;
   createdAt: string;
-}
-
-export interface User {
-  _id: string;
-  firstname: string;
-  lastname: string;
-  phoneNumber: number;
-  address: string;
 }
 
 const OrdersPanel = (): JSX.Element => {
@@ -50,19 +44,9 @@ const OrdersPanel = (): JSX.Element => {
   const itemsPerPage = 6;
 
   const fetchOrders = async (): Promise<Order[]> => {
-    const response = await fetch("http://localhost:8000/api/orders");
+    const response = await fetch("http://localhost:8000/api/orders?limit=all");
     const data = await response.json();
     return data.data.orders;
-  };
-
-  const fetchUsers = async (): Promise<User[]> => {
-    const response = await axios.get("http://localhost:8000/api/users", {
-      headers: {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NzYyMTA2OCwiZXhwIjoxNjkwMjEzMDY4fQ.4Md-7MchA4UtX1DZ2ecTffeBHWmQ7sfpt5ukc4K_0QM",
-      },
-    });
-    return response.data.data.users;
   };
 
   const {
@@ -71,12 +55,6 @@ const OrdersPanel = (): JSX.Element => {
     isError: ordersError,
     refetch,
   } = useQuery<Order[]>(["orders"], fetchOrders);
-
-  const {
-    data: users,
-    isLoading: usersLoading,
-    isError: usersError,
-  } = useQuery<User[]>(["users"], fetchUsers);
 
   const filteredOrders = useMemo(() => {
     if (!orders) return [];
@@ -106,19 +84,13 @@ const OrdersPanel = (): JSX.Element => {
     setCurrentPage((prev) => prev - 1);
   };
 
-  if (ordersLoading || usersLoading) {
+  if (ordersLoading) {
     return <div>Loading...</div>;
   }
 
-  if (ordersError || usersError) {
+  if (ordersError) {
     return <div>Error fetching data</div>;
   }
-
-  const userIdToUsernameMap: { [key: string]: string } = {};
-
-  users.forEach((user) => {
-    userIdToUsernameMap[user._id] = `${user.firstname} ${user.lastname}`;
-  });
 
   return (
     <>
@@ -200,7 +172,7 @@ const OrdersPanel = (): JSX.Element => {
             {currentData.map((order) => (
               <Tr key={order._id}>
                 <Td style={{ textAlign: "center" }}>
-                  {userIdToUsernameMap[order.user]}
+                  {order.user.firstname} {order.user.lastname}
                 </Td>
                 <Td style={{ textAlign: "center" }}>
                   {formatPriceFa(order.totalPrice)}
@@ -212,7 +184,6 @@ const OrdersPanel = (): JSX.Element => {
                   {order.products.length > 0 && (
                     <CheckOrderModal
                       order={order}
-                      user={users.find((user) => user._id === order.user)}
                       ordersRefetch={refetch}
                       usersCurrentPage={currentPage}
                       setUsersCurrentPage={setCurrentPage}
