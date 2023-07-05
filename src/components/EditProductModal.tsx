@@ -220,7 +220,7 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
                   <CKEditor
                     editor={ClassicEditor}
                     data={productData?.description || ""}
-                    onChange={(event, editor) => {
+                    onChange={(_event, editor) => {
                       const data = editor.getData();
                       setProductData({ ...productData, description: data });
                     }}

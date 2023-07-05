@@ -261,7 +261,7 @@ const AddProductModal = ({
                   <CKEditor
                     editor={ClassicEditor}
                     data={formData.description}
-                    onChange={(event, editor) => {
+                    onChange={(_event, editor) => {
                       const data = editor.getData();
                       setFormData({ ...formData, description: data });
                     }}

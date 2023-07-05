@@ -60,7 +60,7 @@ const useCartStore = create<CartStore>((set) => {
             // Remove the item from the cart if there is only one
             return {
               cartItems: state.cartItems.filter(
-                (i, index) => index !== itemIndex
+                (_i, index) => index !== itemIndex
               ),
               totalPrice: state.totalPrice - item.price,
             };

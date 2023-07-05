@@ -18,7 +18,7 @@ const Cart = () => {
   const removeFromCart = useCartStore((state) => state.removeFromCart);
   const totalPrice = useCartStore((state) => state.totalPrice);
 
-  const [itemQuantities, setItemQuantities] = useState<number[]>([]);
+  const [, setItemQuantities] = useState<number[]>([]);
 
   const itemIds = cartItems.map((item: CartItem) => item.id);
 
