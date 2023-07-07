@@ -12,7 +12,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
-import Cookies from "universal-cookie";
+import Cookies from "js-cookie";
 import axios from "axios";
 import { BASE_URL } from "../constants";
 
@@ -38,9 +38,8 @@ const LoginPanel = () => {
   const getLogin = async (data: LoginRequestData) => {
     try {
       const response = await axios.post(BASE_URL + "/auth/login", data);
-      const cookie = new Cookies();
-      cookie.set("adminToken", response.data.token.accessToken);
-      cookie.set("refreshToken", response.data.token.refreshToken);
+      Cookies.set("adminToken", response.data.token.accessToken);
+      Cookies.set("refreshToken", response.data.token.refreshToken);
       navigate("/panel");
       return response.data;
     } catch (error) {
