@@ -17,6 +17,7 @@ import TrComponent from "../components/TrComponent";
 import { EditedData } from "../entities/EditedData";
 import { toast } from "react-toastify";
 import { Product } from "../entities/Product";
+import { BASE_URL } from "../constants";
 
 const InventoryPanel = () => {
   const itemsPerPage = 6;
@@ -26,7 +27,7 @@ const InventoryPanel = () => {
   const fetchProducts = async (page: number) => {
     const [productsResponse] = await Promise.all([
       axios.get<ProductsResponse>(
-        `http://localhost:8000/api/products?page=${page}&limit=6&fields=price,name,quantity`
+        BASE_URL + `/products?page=${page}&limit=6&fields=price,name,quantity`
       ),
     ]);
 
@@ -59,7 +60,7 @@ const InventoryPanel = () => {
   const patchProduct = async (item: EditedData) => {
     try {
       await axios.patch(
-        `http://localhost:8000/api/products/${item.id}`,
+        BASE_URL + `/products/${item.id}`,
         {
           price: item.price,
           quantity: item.quantity,

@@ -21,6 +21,7 @@ import { FcEditImage } from "react-icons/fc";
 import { Subcategory, Category } from "../entities/ProductsPanel";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { BASE_URL, IMAGE_URL } from "../constants";
 
 interface Props {
   itemId: string;
@@ -47,8 +48,7 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
 
   const { data: product } = useQuery(
     ["product", EditProductId],
-    () =>
-      fetchProductData(`http://localhost:8000/api/products/${EditProductId}`),
+    () => fetchProductData(BASE_URL + `/products/${EditProductId}`),
     { enabled: isEditModalOpen }
   );
 
@@ -65,13 +65,12 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
 
   const { data: dataCategory, isLoading: isLoadingCategory } = useQuery(
     ["dataCategory"],
-    () => fetchData("http://localhost:8000/api/categories")
+    () => fetchData(BASE_URL + "/categories")
   );
 
   const { data: dataSubCategory, refetch: subRefetch } = useQuery(
     ["dataSubCategory", category],
-    () =>
-      fetchData(`http://localhost:8000/api/subcategories?category=${category}`),
+    () => fetchData(BASE_URL + `/subcategories?category=${category}`),
     { enabled: !!category }
   );
 
@@ -109,7 +108,7 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
 
     try {
       const response = await axios.patch(
-        `http://localhost:8000/api/products/${itemId}`,
+        BASE_URL + `/products/${itemId}`,
         formData
       );
       refetch();
@@ -213,7 +212,7 @@ const EditProductModal = ({ itemId, refetch }: Props) => {
                 </Flex>
                 <img
                   className="mb-4 w-16"
-                  src={`http://localhost:8000/images/${productData?.images[0]}`}
+                  src={IMAGE_URL + `/${productData?.images[0]}`}
                 />
                 <FormControl>
                   <FormLabel>توضیحات</FormLabel>

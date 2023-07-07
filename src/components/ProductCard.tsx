@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { ResponseData } from "../entities/ResponseData";
+import { BASE_URL, IMAGE_URL } from "../constants";
 
 const ProductCard = ({ image, name, price, productId }: Product) => {
   const addToCart = useCartStore((state) => state.addToCart);
@@ -43,9 +44,7 @@ const ProductCard = ({ image, name, price, productId }: Product) => {
 
   const fetchProduct = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/products/${productId}`
-      );
+      const response = await axios.get(BASE_URL + `/products/${productId}`);
       setResponse(response.data.data.product);
       return response.data.data.product;
     } catch (error) {
@@ -59,7 +58,7 @@ const ProductCard = ({ image, name, price, productId }: Product) => {
       const item: CartItem = {
         id: response._id,
         name: response.name,
-        image: `http://localhost:8000/images/${response.images[0]}`,
+        image: IMAGE_URL + `/${response.images[0]}`,
         price: response.price,
         quantity: counter,
       };

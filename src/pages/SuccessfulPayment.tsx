@@ -3,6 +3,7 @@ import close from "../assets/check.png";
 import { useEffect } from "react";
 import useCartStore from "../store";
 import axios from "axios";
+import { BASE_URL } from "../constants";
 
 const SuccessfulPayment = () => {
   const clearCart = useCartStore((state) => state.clearCart);
@@ -13,7 +14,7 @@ const SuccessfulPayment = () => {
 
   const order = JSON.parse(localStorage.getItem("order") as string);
 
-  axios.post("http://localhost:8000/api/orders", order);
+  axios.post(BASE_URL + "/orders", order);
 
   return (
     <Flex

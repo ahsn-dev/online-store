@@ -18,6 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { formatPriceFa } from "../utils/formatPrice";
 import { formatDate } from "../utils/formatDate";
 import { Product } from "../entities/Product";
+import { BASE_URL } from "../constants";
 
 export interface Order {
   _id: string;
@@ -44,7 +45,7 @@ const OrdersPanel = (): JSX.Element => {
   const itemsPerPage = 6;
 
   const fetchOrders = async (): Promise<Order[]> => {
-    const response = await fetch("http://localhost:8000/api/orders?limit=all");
+    const response = await fetch(BASE_URL + "/orders?limit=all");
     const data = await response.json();
     return data.data.orders;
   };

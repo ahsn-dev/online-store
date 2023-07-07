@@ -9,6 +9,7 @@ import { Category } from "../entities/ProductsPanel";
 import ProductCard from "../components/ProductCard";
 import Sort from "../components/Sort";
 import { Product } from "../entities/Product";
+import { BASE_URL, IMAGE_URL } from "../constants";
 
 const Products = () => {
   const { colorMode } = useColorMode();
@@ -24,7 +25,7 @@ const Products = () => {
     const subcategoryId = params.get("subcategory") || "";
 
     if (categoryId !== "") {
-      let url = `http://localhost:8000/api/products?category=${categoryId}`;
+      let url = BASE_URL + `/products?category=${categoryId}`;
 
       if (subcategoryId !== "") {
         url += `&subcategory=${subcategoryId}`;
@@ -35,15 +36,13 @@ const Products = () => {
       const response = await axios.get(url);
       return response.data.data.products;
     } else {
-      const response = await axios.get(
-        "http://localhost:8000/api/products?limit=all"
-      );
+      const response = await axios.get(BASE_URL + "/products?limit=all");
       return response.data.data.products;
     }
   };
 
   const fetchCategories = async () => {
-    const response = await axios.get("http://localhost:8000/api/categories");
+    const response = await axios.get(BASE_URL + "/categories");
     return response.data.data.categories;
   };
 
@@ -78,7 +77,7 @@ const Products = () => {
             return (
               <Link
                 key={category._id}
-                to={`http://localhost:5173/products?category=${category?._id}`}
+                to={`https://ahsn-online-store.vercel.app/products?category=${category?._id}`}
               >
                 <div
                   className={`mx-1 my-1 flex w-[5rem] flex-grow cursor-pointer flex-col items-center rounded-lg px-2 py-2 shadow-lg sm:w-auto sm:px-3 md:mx-3 md:px-6 md:py-4 ${
@@ -111,9 +110,7 @@ const Products = () => {
               <ProductCard
                 key={product._id}
                 image={
-                  product.images
-                    ? `http://localhost:8000/images/${product.images[0]}`
-                    : ""
+                  product.images ? IMAGE_URL + `/${product.images[0]}` : ""
                 }
                 name={product.name}
                 price={product.price}

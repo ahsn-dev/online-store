@@ -28,6 +28,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Product } from "../entities/Product";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { BASE_URL } from "../constants";
 
 interface Props {
   currentPage: number;
@@ -61,18 +62,14 @@ interface IFormInput {
 }
 
 const createProduct = async (productData: any) => {
-  const response = await axios.post(
-    "http://localhost:8000/api/products",
-    productData,
-    {
-      headers: {
-        "Content-Type": `multipart/form-data;
+  const response = await axios.post(BASE_URL + "/products", productData, {
+    headers: {
+      "Content-Type": `multipart/form-data;
           boundary=${productData._boundary}`,
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NzYyMTA2OCwiZXhwIjoxNjkwMjEzMDY4fQ.4Md-7MchA4UtX1DZ2ecTffeBHWmQ7sfpt5ukc4K_0QM",
-      },
-    }
-  );
+      Authorization:
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NzYyMTA2OCwiZXhwIjoxNjkwMjEzMDY4fQ.4Md-7MchA4UtX1DZ2ecTffeBHWmQ7sfpt5ukc4K_0QM",
+    },
+  });
   return response.data;
 };
 
@@ -113,13 +110,12 @@ const AddProductModal = ({
 
   const { data: dataCategory, isLoading: isLoadingCategory } = useQuery(
     ["dataCategory"],
-    () => fetchData("http://localhost:8000/api/categories")
+    () => fetchData(BASE_URL + "/categories")
   );
 
   const { data: dataSubCategory } = useQuery(
     ["dataSubCategory", category],
-    () =>
-      fetchData(`http://localhost:8000/api/subcategories?category=${category}`),
+    () => fetchData(BASE_URL + `/subcategories?category=${category}`),
     { enabled: !!category }
   );
 

@@ -21,6 +21,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import weekends from "react-multi-date-picker/plugins/highlight_weekends";
 import DatePicker, { DateObject } from "react-multi-date-picker";
+import { BASE_URL } from "../constants";
 
 interface MyDateObject extends DateObject {
   unix: number;
@@ -71,7 +72,7 @@ const FinalizePurchase = () => {
       };
 
       try {
-        const response = await fetch("http://localhost:8000/api/users", {
+        const response = await fetch(BASE_URL + "/users", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -203,7 +204,7 @@ const FinalizePurchase = () => {
                         className="w-full "
                         calendar={persian}
                         locale={persian_fa}
-                        minDate={new Date().setDate(31)}
+                        minDate={new Date().setDate(8)}
                         plugins={[weekends()]}
                         inputClass="custom-input"
                         placeholder="تاریخ تحویل را انتخاب کنید"

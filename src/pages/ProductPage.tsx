@@ -11,6 +11,7 @@ import { BiMinus, BiTrash } from "react-icons/bi";
 import useCartStore, { CartItem } from "../store";
 import { toast } from "react-toastify";
 import { ResponseData } from "../entities/ResponseData";
+import { BASE_URL, IMAGE_URL } from "../constants";
 
 const ProductPage = () => {
   const [like, setLike] = useState(false);
@@ -36,9 +37,7 @@ const ProductPage = () => {
 
   const fetchProduct = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/products/${productIdPath}`
-      );
+      const response = await axios.get(BASE_URL + `/products/${productIdPath}`);
       setResponse(response.data.data.product);
       return response.data.data.product;
     } catch (error) {
@@ -52,7 +51,7 @@ const ProductPage = () => {
       const item: CartItem = {
         id: response._id,
         name: response.name,
-        image: `http://localhost:8000/images/${response.images[0]}`,
+        image: IMAGE_URL + `/${response.images[0]}`,
         price: response.price,
         quantity: 1,
       };
@@ -135,7 +134,7 @@ const ProductPage = () => {
                   <div className="flex flex-grow md:ml-3">
                     <span className="inline-block max-w-full overflow-hidden">
                       <Image
-                        src={`http://localhost:8000/images/${product.images[0]}`}
+                        src={IMAGE_URL + `/${product.images[0]}`}
                         className="absolute inset-0 right-32 top-12 h-80 w-80 max-w-full object-contain md:drop-shadow-xl"
                       />
                     </span>
@@ -150,7 +149,9 @@ const ProductPage = () => {
                 <div className="relative flex flex-wrap items-start">
                   <div className="mr-80 mt-8 w-1/3">
                     <h2 className="pb-2 text-lg font-bold">توضیحات:</h2>
-                    <span>{product.description}</span>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: product.description }}
+                    />
                   </div>
                   <div className="sticky top-10 mt-8 flex max-w-[350px] flex-grow flex-col items-center rounded-sm border-2 px-6 py-4 shadow-lg ltr:ml-auto rtl:mr-auto sm:p-4 md:top-36 xl:p-6 xl:rtl:ml-2">
                     <div className="flex w-full items-center justify-between ">

@@ -19,6 +19,7 @@ import {
   useMutation,
 } from "@tanstack/react-query";
 import { Product } from "../entities/Product";
+import { BASE_URL } from "../constants";
 
 interface Props {
   itemId: string;
@@ -55,7 +56,7 @@ const DeleteProductModal = ({
 
   const mutation = useMutation(
     async (productId: string) => {
-      await axios.delete(`http://localhost:8000/api/products/${productId}`, {
+      await axios.delete(BASE_URL + `/products/${productId}`, {
         headers: {
           Authorization:
             "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NzYyMTA2OCwiZXhwIjoxNjkwMjEzMDY4fQ.4Md-7MchA4UtX1DZ2ecTffeBHWmQ7sfpt5ukc4K_0QM",

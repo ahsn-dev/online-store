@@ -15,21 +15,20 @@ import { IoShirtOutline } from "react-icons/io5";
 import { MdOutlineToys } from "react-icons/md";
 import { CgGym } from "react-icons/cg";
 import { Category, Subcategory } from "../entities/ProductsPanel";
+import { BASE_URL } from "../constants";
 
 interface MyError extends Error {
   message: string;
 }
 
 async function fetchCategories(): Promise<Category[]> {
-  const response = await fetch("http://localhost:8000/api/categories");
+  const response = await fetch(BASE_URL + "/categories");
   const data = await response.json();
   return data.data.categories;
 }
 
 async function fetchSubcategories(): Promise<Subcategory[]> {
-  const response = await fetch(
-    "http://localhost:8000/api/subcategories?limit=all"
-  );
+  const response = await fetch(BASE_URL + "/subcategories?limit=all");
   const data = await response.json();
   return data.data.subcategories;
 }
@@ -169,7 +168,7 @@ const ProductsGroup: React.FC = () => {
                       >
                         <Flex direction="column" gap="12px" width="100%">
                           <Link
-                            to={`http://localhost:5173/products?category=${category._id}`}
+                            to={`https://ahsn-online-store.vercel.app/products?category=${category._id}`}
                           >
                             <span className="goodsSpan hover:text-[#b4184f]">
                               {category.name}
@@ -184,7 +183,7 @@ const ProductsGroup: React.FC = () => {
                                 className="flex flex-col items-start hover:text-[#b4184f]"
                               >
                                 <Link
-                                  to={`http://localhost:5173/products?category=${category._id}&subcategory=${subcategory._id}`}
+                                  to={`https://ahsn-online-store.vercel.app/products?category=${category._id}&subcategory=${subcategory._id}`}
                                 >
                                   {subcategory.name}
                                 </Link>

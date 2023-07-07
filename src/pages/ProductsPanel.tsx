@@ -19,6 +19,7 @@ import EditProductModal from "../components/EditProductModal";
 import DeleteProductModal from "../components/DeleteProductModal";
 import { truncateText } from "../utils/truncateText";
 import { Product } from "../entities/Product";
+import { BASE_URL, IMAGE_URL } from "../constants";
 
 const ProductsPanel: React.FC = () => {
   const itemsPerPage = 3;
@@ -26,11 +27,9 @@ const ProductsPanel: React.FC = () => {
 
   const fetchProducts = async (page: number) => {
     const [productsResponse, subcategoriesResponse] = await Promise.all([
-      axios.get<ProductsResponse>(
-        `http://localhost:8000/api/products?page=${page}&limit=3`
-      ),
+      axios.get<ProductsResponse>(BASE_URL + `/products?page=${page}&limit=3`),
       axios.get<{ data: { subcategories: Subcategory[] } }>(
-        "http://localhost:8000/api/subcategories?limit=all"
+        BASE_URL + "/subcategories?limit=all"
       ),
     ]);
 
@@ -147,7 +146,7 @@ const ProductsPanel: React.FC = () => {
                 {item.images && item.images[0] && (
                   <Td>
                     <Image
-                      src={`http://localhost:8000/images/${item.images[0]}`}
+                      src={IMAGE_URL + `/${item.images[0]}`}
                       className="h-24 w-24 object-contain"
                       alt={item.name}
                     />

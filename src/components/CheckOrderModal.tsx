@@ -21,9 +21,10 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Order } from "../pages/OrdersPanel";
-import { formatDate } from "../utils/formatDate";
+import { formatDate, formatDateNumber } from "../utils/formatDate";
 import { truncateText } from "../utils/truncateText";
 import { formatNumberFa } from "../utils/formatNumberFa";
+import { BASE_URL } from "../constants";
 
 interface Props {
   order: Order;
@@ -45,18 +46,15 @@ const CheckOrderModal = ({
 
   const handleDeliveryStatus = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/orders/${order._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            deliveryStatus: true,
-          }),
-        }
-      );
+      const response = await fetch(BASE_URL + `/orders/${order._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          deliveryStatus: true,
+        }),
+      });
 
       if (response.ok) {
         ordersRefetch();
@@ -86,6 +84,7 @@ const CheckOrderModal = ({
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const itemsForCurrentPage = order.products.slice(startIndex, endIndex);
+  // const newDate = Date.now();
 
   return (
     <>
@@ -214,7 +213,7 @@ const CheckOrderModal = ({
               </Button>
             ) : (
               <Text className="mx-auto text-lg">
-                زمان تحویل: {formatDate(order.deliveryDate)}
+                زمان تحویل: {formatDateNumber(Date.now())}
               </Text>
             )}
           </ModalFooter>

@@ -14,6 +14,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import axios from "axios";
+import { BASE_URL } from "../constants";
 
 interface LoginFormValues {
   username: string;
@@ -36,10 +37,7 @@ const LoginPanel = () => {
 
   const getLogin = async (data: LoginRequestData) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/auth/login",
-        data
-      );
+      const response = await axios.post(BASE_URL + "/auth/login", data);
       const cookie = new Cookies();
       cookie.set("adminToken", response.data.token.accessToken);
       cookie.set("refreshToken", response.data.token.refreshToken);

@@ -5,11 +5,10 @@ import Loading from "./Loading";
 import { Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { Product } from "../entities/Product";
+import { BASE_URL, IMAGE_URL } from "../constants";
 
 const fetchProducts = async () => {
-  const response = await axios.get(
-    "http://localhost:8000/api/products?limit=8"
-  );
+  const response = await axios.get(BASE_URL + "/products?limit=8");
   return response.data.data.products;
 };
 
@@ -34,11 +33,7 @@ const LatestProducts = () => {
           {data.map((product: Product) => (
             <ProductCard
               key={product._id}
-              image={
-                product.images
-                  ? `http://localhost:8000/images/${product.images[0]}`
-                  : ""
-              }
+              image={product.images ? IMAGE_URL + `/${product.images[0]}` : ""}
               name={product.name}
               price={product.price}
               productId={product._id}

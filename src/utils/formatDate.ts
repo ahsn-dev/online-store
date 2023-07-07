@@ -3,3 +3,9 @@ export const formatDate = (dateString: string) => {
   const formattedDate = date.toLocaleDateString("fa");
   return formattedDate;
 };
+
+export const formatDateNumber = (dateNumber: number) => {
+  const date = new Date(dateNumber);
+  const formattedDate = date.toLocaleDateString("fa");
+  return formattedDate;
+};

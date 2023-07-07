@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import router from "../routes";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { BASE_URL } from "../constants";
 
 const Cart = () => {
   const { colorMode } = useColorMode();
@@ -24,9 +25,7 @@ const Cart = () => {
 
   const fetchProductQuantity = async (id: string) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/products/${id}`
-      );
+      const response = await axios.get(BASE_URL + `/products/${id}`);
       const quantity = response.data.data.product.quantity;
       return quantity;
     } catch (error) {
