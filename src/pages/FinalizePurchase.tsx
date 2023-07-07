@@ -110,7 +110,7 @@ const FinalizePurchase = () => {
     const userId = await createUser();
     if (userId) {
       await createOrder(userId);
-      window.location.href = `http://localhost:3003/payment`;
+      window.location.href = `https://online-shop-payment-process.vercel.app`;
     }
     setIsLoading(false);
   };
