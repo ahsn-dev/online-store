@@ -131,7 +131,7 @@ const ProductCard = ({ image, name, price, productId }: Product) => {
               <div className="mt-2 flex justify-end self-end text-left">
                 <div>
                   <div
-                    className={`text-md flex flex-row-reverse items-center font-bold ${
+                    className={`text-md flex items-center gap-x-1.5 font-bold ${
                       colorMode === "dark" ? "text-[#E2E8F0]" : "text-[#424750]"
                     } no-underline md:text-lg`}
                   >
