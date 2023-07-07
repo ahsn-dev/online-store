@@ -29,6 +29,7 @@ import { Product } from "../entities/Product";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { BASE_URL } from "../constants";
+import Cookies from "js-cookie";
 
 interface Props {
   currentPage: number;
@@ -66,8 +67,7 @@ const createProduct = async (productData: any) => {
     headers: {
       "Content-Type": `multipart/form-data;
           boundary=${productData._boundary}`,
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NzYyMTA2OCwiZXhwIjoxNjkwMjEzMDY4fQ.4Md-7MchA4UtX1DZ2ecTffeBHWmQ7sfpt5ukc4K_0QM",
+      Authorization: `Bearer ${Cookies.get("adminToken")}`,
     },
   });
   return response.data;
