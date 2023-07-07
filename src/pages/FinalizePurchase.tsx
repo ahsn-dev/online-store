@@ -72,12 +72,10 @@ const FinalizePurchase = () => {
       };
 
       try {
-        const response = await fetch(BASE_URL + "/users", {
+        const response = await fetch(BASE_URL + "/auth/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzZmZGE0ODA3MjkyNTdiOTExOTBhNCIsImlhdCI6MTY4NzYyMTA2OCwiZXhwIjoxNjkwMjEzMDY4fQ.4Md-7MchA4UtX1DZ2ecTffeBHWmQ7sfpt5ukc4K_0QM",
           },
           body: JSON.stringify(user),
         });
